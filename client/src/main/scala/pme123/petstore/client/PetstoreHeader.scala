@@ -64,6 +64,7 @@ private[client] object PetstoreHeader
     <div class="ui item">
       <button class="ui basic icon button"
               onclick={_: Event =>
+                info("Shopping Card is not implemented")
               }
               data:data-tooltip="Shopping Cart"
               data:data-position="bottom right">
@@ -77,6 +78,7 @@ private[client] object PetstoreHeader
     <div class="ui item">
       <button class="ui basic icon button"
               onclick={_: Event =>
+                info("LOG IN is not implemented")
                 setTimeout(200) {
                   jQuery(".ui.modal").modal("show")
                 }}

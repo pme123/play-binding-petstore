@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import pme123.petstore.shared.PetCategory.{Birds, Dogs}
 import pme123.petstore.shared.{PetCategory, PetProduct, PetProducts}
 
+import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -35,14 +36,14 @@ object PetRepo {
         Dogs)
     )
 
-  private val productIdentMap = Map[String, Int]()
+  private val productIdentMap = mutable.Map[String, Int]()
   private val productIdentPrefix = ""
 
   private def nextProductIdent(category: PetCategory): String = {
     val prefix = category.identPrefix
     val nextIdent = productIdentMap.getOrElse(prefix, 0) + 1
-    productIdentMap.updated(prefix, nextIdent)
-    s"$prefix-$nextIdent"
+    productIdentMap.update(prefix, nextIdent)
+    f"$prefix-$nextIdent%03d"
   }
 
 }
