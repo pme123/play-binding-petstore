@@ -1,0 +1,19 @@
+.category {
+    background-size: 1.18em 1em;
+    background-repeat: no-repeat;
+}
+.fish {
+    background-image: url("../images/fish.png");
+}
+.dogs {
+    background-image: url("../images/dogs.png");
+}
+.cats {
+    background-image: url("../images/cats.png");
+}
+.birds {
+    background-image: url("../images/birds.png");
+}
+.mice {
+    background-image: url("../images/mice.png");
+}

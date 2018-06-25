@@ -1,0 +1,18 @@
+# Petstore Routes
+# This file defines Petstore application routes (Higher priority routes first)
+# ~~~~
+
+# Index file for the JobCockpit.
+GET        /                                    pme123.petstore.server.boundary.PetstoreController.index()
+
+# Websocket for live updates (LogEntries) on Jobs
+#GET        /ws/:jobIdent                       pme123.petstore.server.boundary.WebsocketController.ws(jobIdent, subWebpath: Option[String], resultCount: Option[Int], resultFilter: Option[String])
+# API to get all the Jobs that are provided
+GET        /api/petProducts/:petCategory        pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
+# API to get all the Client Configs that are registered for a jobConfig
+#GET        /api/petProducts/:jobIdent                      pme123.petstore.server.boundary.PetstoreController.clientConfigs()
+# Map static resources from the /public folder to the /assets URL path
+GET        /assets/*file                        controllers.Assets.at(file)
+GET        /versionedAssets/*file               controllers.Assets.versioned(file)
+
+->         /webjars                             webjars.Routes
