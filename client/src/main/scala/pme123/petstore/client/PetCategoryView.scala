@@ -13,6 +13,7 @@ private[client] object PetCategoryView
   @dom
   private[client] def create(): Binding[HTMLElement] = {
     val cat = PetUIStore.uiState.petCategory.bind
+    ServerServices.petProducts(cat).bind
     <div class="">
       {categoryHeader(cat).bind}{//
       categoryTable.bind}

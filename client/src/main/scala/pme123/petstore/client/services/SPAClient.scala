@@ -14,6 +14,6 @@ trait SPAClient
     info(s"Init client with: $context$webPath")
     UIStore.changeWebContext(context)
     UIStore.changeWebPath(webPath)
-    ClientWebsocket.connectWS()
+    //ClientWebsocket.connectWS()
   }
 }
