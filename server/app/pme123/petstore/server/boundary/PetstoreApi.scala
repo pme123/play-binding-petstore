@@ -18,6 +18,13 @@ class PetstoreApi @Inject()(petRepo: PetRepo,
                            (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
+  def petCategories(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+    petRepo.petCategories()
+      .map(categories =>
+        Ok(Json.toJson(categories)).as(JSON)
+      )
+  }
+
   def petProducts(petCategory: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
     petRepo.petProducts(PetCategory.withNameInsensitive(petCategory))
       .map(products =>

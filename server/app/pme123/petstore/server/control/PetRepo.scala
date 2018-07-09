@@ -3,7 +3,7 @@ package pme123.petstore.server.control
 
 import javax.inject.{Inject, Singleton}
 import pme123.petstore.shared.PetCategory.{Birds, Dogs}
-import pme123.petstore.shared.{PetCategory, PetProduct, PetProducts}
+import pme123.petstore.shared.{PetCategories, PetCategory, PetProduct, PetProducts}
 
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
@@ -11,6 +11,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PetRepo @Inject()()
                        (implicit val ec: ExecutionContext) {
+
+  def petCategories(): Future[PetCategories] =
+    Future.successful(
+      PetCategories(
+        PetCategory.values.toList
+      )
+    )
 
   def petProducts(petCategory: PetCategory): Future[PetProducts] =
     Future.successful(
@@ -24,7 +31,7 @@ object PetRepo {
     List(
       PetProduct(nextProductIdent(Birds),
         "Amazon Parrot",
-        Birds),
+        Birds, Set("tropical", "talks")),
       PetProduct(nextProductIdent(Birds),
         "Finch",
         Birds),

@@ -6,6 +6,18 @@ import play.api.libs.json.OFormat
 
 import scala.collection.immutable
 
+
+case class PetCategories(
+                        categories: List[PetCategory] = Nil
+                      ) {
+
+}
+
+object PetCategories {
+  implicit val jsonFormat: OFormat[PetCategories] = derived.oformat[PetCategories]()
+
+}
+
 sealed trait PetCategory extends EnumEntry {
 
   def subTitle: String

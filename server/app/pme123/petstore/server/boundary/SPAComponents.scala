@@ -17,5 +17,4 @@ class SPAComponents @Inject()(val assetsFinder: AssetsFinder,
                              )(implicit ec: ExecutionContext) {
 
 
-
 }

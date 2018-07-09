@@ -1,13 +1,10 @@
 package pme123.petstore.client
 
+import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
-import org.scalajs.jquery.jQuery
-import pme123.petstore.client.PetstoreHeader.info
 import pme123.petstore.client.services.ClientUtils
 import pme123.petstore.shared.{PetCategory, PetProduct}
-
-import scala.scalajs.js.timers.setTimeout
 
 private[client] object PetCategoryView
   extends ClientUtils {
@@ -70,25 +67,43 @@ private[client] object PetCategoryView
         {petProduct.category.entryName}
       </td>
       <td class="five wide">
-        {petProduct.tags.mkString("::")}
+        {Constants(petProduct.tags.map(tagLink).toList: _*).map(_.bind)}
       </td>
       <td class="three wide">
-        {editButton(petProduct).bind}
+        {editButton(petProduct).bind}{//
+        showDetailButton(petProduct).bind}
       </td>
     </tr>
 
   @dom
   private def editButton(petProduct: PetProduct) = {
-    <div class="ui item">
       <button class="ui basic icon button"
               onclick={_: Event =>
-                info("Edit is not implemented")
-              }
+                info("Edit is not implemented")}
               data:data-tooltip={s"Edit ${petProduct.name}"}
               data:data-position="bottom right">
-        <i class="edit outline icon large"></i>
+        <i class="edit outline icon"></i>
       </button>
-    </div>
   }
+
+  @dom
+  private def showDetailButton(petProduct: PetProduct) = {
+      <button class="ui basic icon button"
+              onclick={_: Event =>
+                info("Show Details is not implemented")}
+              data:data-tooltip={s"Show ${petProduct.name}"}
+              data:data-position="bottom right">
+        <i class="external alternate icon"></i>
+      </button>
+  }
+
+  @dom
+  private def tagLink(tag: String) = {
+    <a class="ui tag label">
+      {tag}
+    </a>
+
+  }
+
 
 }
