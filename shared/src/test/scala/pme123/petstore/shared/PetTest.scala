@@ -1,7 +1,6 @@
 package pme123.petstore.shared
 
 import play.api.libs.json.Json
-import pme123.adapters.shared.ClientConfig
 import pme123.petstore.shared.services.UnitTest
 
 class PetTest extends UnitTest {

@@ -4,8 +4,9 @@ import julienrf.json.derived
 import play.api.libs.json.OFormat
 
 case class PetProducts(
-                       products: List[PetProduct] = Nil
-                     ) {
+                        category: PetCategory,
+                        products: List[PetProduct] = Nil
+                      ) {
 
 }
 

@@ -23,7 +23,7 @@ class PetRepo @Inject()()
     Future.successful(
       PetRepo.petProducts
         .filter(_.category == petCategory))
-      .map(PetProducts(_))
+      .map(PetProducts(petCategory, _))
 }
 
 object PetRepo {

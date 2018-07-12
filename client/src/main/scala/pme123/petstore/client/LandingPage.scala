@@ -5,6 +5,7 @@ import org.scalajs.dom.document
 import org.scalajs.dom.raw._
 import org.scalajs.jquery.jQuery
 import pme123.petstore.client.services.SemanticUI.jq2semantic
+import pme123.petstore.shared.PetCategory
 import pme123.petstore.shared.services.Logging
 
 import scala.language.implicitConversions
@@ -24,16 +25,35 @@ case class LandingPage() extends Logging {
       jQuery(".pets").popup(js.Dynamic.literal(on = "click"))
     }
 
-  jQuery(".ui.item .ui.input").popup(js.Dynamic.literal(on = "hover"))
-}
+    jQuery(".ui.item .ui.input").popup(js.Dynamic.literal(on = "hover"))
+  }
 
-@dom
-def render: Binding[HTMLElement] = {
-  <div class="">{PetstoreHeader.create ().bind}{//
-  PetMenu.create ().bind}<div class="ui four column doubling stackable grid">{//
-  LeftMenu.create ().bind}{//
-  ContentPanel.create ().bind}</div>
-  </div>
-}
+  @dom
+  def render: Binding[HTMLElement] = {
+    <div class="">
+      {initCategories.bind}{//
+      PetstoreHeader.create().bind}<div class="ui four column doubling stackable grid">
+      {//
+      LeftMenu.create().bind}{//
+      ContentPanel.create().bind}
+    </div>
+    </div>
+  }
+
+  @dom
+  lazy val initCategories: Binding[HTMLElement] = {
+    <div>
+     {ServerServices.petCategories().bind}{//
+      for (petCategory <- PetUIStore.uiState.petCategories)
+        yield initProducts(petCategory).bind}
+    </div>
+  }
+
+  @dom
+  def initProducts(petCategory: PetCategory): Binding[HTMLElement] = {
+    <div>
+      {ServerServices.petProducts(petCategory).bind}
+    </div>
+  }
 
 }

@@ -14,10 +14,11 @@ private[client] object PetCategoryView
   @dom
   private[client] def create(): Binding[HTMLElement] = {
     val cat = PetUIStore.uiState.petCategory.bind
-    ServerServices.petProducts(cat).bind
+    PetUIStore.changePetProducts(cat)
     <div class="">
       {categoryHeader(cat).bind}{//
-      categoryTable.bind}
+      categoryDescr(cat).bind}{//
+      categoryTable(cat).bind}
     </div>
   }
 
@@ -26,12 +27,18 @@ private[client] object PetCategoryView
 
   @dom
   private def categoryHeader(petCategory: PetCategory) = <h1 class="header">
-    <i class={s"category ${petCategory.styleName} big icon"}></i>{petCategory.entryName}
+    <i class={s"category ${petCategory.styleName} big icon"}></i>&nbsp;&nbsp;{petCategory.entryName}
 
   </h1>
 
   @dom
-  private def categoryTable = {
+  private def categoryDescr(petCategory: PetCategory) =
+    <h4 class="description">
+      {petCategory.subTitle}
+    </h4>
+
+  @dom
+  private def categoryTable(petCategory: PetCategory) = {
     <div class="content">
       <table class="ui padded table">
         <thead>

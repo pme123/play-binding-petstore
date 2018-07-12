@@ -58,7 +58,7 @@ trait ClientUtils
       <img class="defaultImage" src={imageUrl}/>
     </td>
 
-  def activeStyle(isActive:Boolean):String = if(isActive) "active" else ""
+  def activeStyle(isActive:Boolean):String = if(isActive) "active blue" else ""
 
 }
 

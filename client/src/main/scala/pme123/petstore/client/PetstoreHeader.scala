@@ -20,12 +20,12 @@ private[client] object PetstoreHeader
     <div class="ui main borderless menu">
       {faviconElem.bind}{//
       title.bind //
-      }{spacer.bind}<div class="right menu">
+      }{spacer.bind}{//
+      PetMenu.create().bind}
       {//
       textFilter.bind}{//
       shoppingCardButton.bind}{//
       logInButton.bind}
-    </div>
     </div>
 
   }
@@ -59,7 +59,7 @@ private[client] object PetstoreHeader
   // this creates a compile exception in intellij
   @dom
   private def textFilter = {
-    <div class="ui item">
+    <div class="ui item right">
       <div class="ui right pointing dropdown basic icon button">
         <i class="search icon large"></i>
         <div class="vertical menu">

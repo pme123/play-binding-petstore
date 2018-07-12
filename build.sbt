@@ -2,7 +2,7 @@
 import sbtcrossproject.{CrossType, crossProject}
 import Settings._
 
-lazy val adaptersRoot = project.in(file(".")).
+lazy val petstoreRoot = project.in(file(".")).
   aggregate(sharedJvm, sharedJs, server, client)
   .settings(organizationSettings)
   .settings(

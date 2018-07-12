@@ -1,5 +1,7 @@
 package pme123.petstore.shared.services
 
+import pme123.petstore.shared.services.LogLevel._
+
 import scala.util.Try
 
 /**
@@ -14,72 +16,45 @@ class LoggerTest extends UnitTest {
 
   // Logger.debug
   {
-    val logEntry = debug(logMsg)
-    "A logged debug" should "return a LogEntry of level debug" in {
-      logEntry.level should be(DEBUG)
-    }
-    matchLogMsg(logEntry)
-    checkGenericLog(logEntry)
+    val msg = debug(logMsg)
+    matchLogMsg(msg)
   }
   // Logger.info
   {
-    val logEntry = Logger.info(logMsg)
-    "A logged info" should "return a LogEntry of level info" in {
-      logEntry.level should be(INFO)
-    }
-    matchLogMsg(logEntry)
-    checkGenericLog(logEntry)
+    val msg = info(logMsg)
+    matchLogMsg(msg)
   }
   // Logger.warn
   {
-    val logEntry = warn(logMsg)
-    "A logged warn" should "return a LogEntry of level warn" in {
-      logEntry.level should be(WARN)
-    }
-    matchLogMsg(logEntry)
-    checkGenericLog(logEntry)
+    val msg = warn(logMsg)
+    matchLogMsg(msg)
   }
   // Logger.error
   {
-    val logEntry = error(logMsg)
-    "A logged error" should "return a LogEntry of level error" in {
-      logEntry.level should be(ERROR)
-    }
-    matchLogMsg(logEntry)
-    checkGenericLog(logEntry)
+    val msg = error(logMsg)
+    matchLogMsg(msg)
   }
   // Logger.error(Throwable)
   {
-    val logEntry = error(new Exception(logMsgPrefix))
-    "A logged error with Exception" should "return a LogEntry of level error" in {
-      logEntry.level should be(ERROR)
-    }
+    val msg = error(new Exception(logMsgPrefix))
     it should "match the log message" in {
-      logEntry.msg should be(logMsgPrefix)
+      msg should be(logMsgPrefix)
     }
-    checkGenericLog(logEntry)
   }
   // Logger.error(Throwable, msg)
   {
     val simpleMsg = "simple log"
-    val logEntry = error(new Exception(logMsgPrefix), simpleMsg)
-    "A logged error with Exception and message" should "return a LogEntry of level error" in {
-      logEntry.level should be(ERROR)
-    }
-    it should "match the log message" in {
-      logEntry.msg should be(simpleMsg)
-    }
+    val msg = error(simpleMsg, new Exception(logMsgPrefix))
 
-    checkGenericLog(logEntry)
+    it should "match the log message" in {
+      msg should be(simpleMsg)
+    }
   }
   // Logger.error(Throwable, msg, params)
   {
-    val logEntry = error(new Exception(logMsgPrefix), logMsg)
-    "A logged error with Exception, message and parameters" should "return a LogEntry of level error" in {
-      logEntry.level should be(ERROR)
-    }
-    matchLogMsg(logEntry)
-    checkGenericLog(logEntry)
+    val msg = error(logMsg,new Exception(logMsgPrefix))
+
+    matchLogMsg(msg)
   }
 
   "AllErrorMsgs for a AdaptersException" should "be formatted in an expected format" in {
@@ -98,12 +73,12 @@ class LoggerTest extends UnitTest {
   }
   // LogEntry.asString
   {
-    val logEntry = Logger.info(logMsg)
+    val msg = Logging.info(logMsg)
     "A LogEntry as string" should "be a nice readable text preceeded by the LogLevel" in {
-      logEntry.asString should be(s"INFO: $logMsgPrefix $logParam1 $logParam2")
+      msg should be(s"INFO: $logMsgPrefix $logParam1 $logParam2")
     }
     it should "have no problems with UTF-8 encodings" in {
-      Logger.info("12%\u00e4Tafelgetr\u00e4nke\nw").asString should be("INFO: 12%\u00e4Tafelgetr\u00e4nke\nw")
+      Logging.info("12%\u00e4Tafelgetr\u00e4nke\nw") should be("INFO: 12%\u00e4Tafelgetr\u00e4nke\nw")
     }
   }
   // LogLevel.fromLevel
@@ -176,14 +151,9 @@ class LoggerTest extends UnitTest {
     }
   }
 
-  private def matchLogMsg(logEntry: LogEntry): Unit =
+  private def matchLogMsg(msg:String): Unit =
     it should "match the log message" in {
-      logEntry.msg should be(logMsg)
+      msg should be(logMsg)
     }
 
-  private def checkGenericLog(logEntry: LogEntry): Unit =
-    it should "also work with the generic function" in {
-      val newLogEntry = log(logEntry)
-      newLogEntry should be(logEntry)
-    }
 }

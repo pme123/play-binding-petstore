@@ -17,3 +17,12 @@
 .mice {
     background-image: url("../images/mice.png");
 }
+
+.ui.relaxed.grid>.column.menuLinks:not(.row) {
+    padding: 0;
+}
+
+#pets {
+    border: none;
+    box-shadow: none;
+}

@@ -20,7 +20,7 @@ object ServerServices
   def petProducts(petCategory: PetCategory): Binding[HTMLElement] = {
     val apiPath = s"${UIStore.uiState.webContext.value}/api/petProducts/${petCategory.entryName}"
 
-    httpGet(apiPath, (results: PetProducts) => PetUIStore.changePetProducts(results))
+    httpGet(apiPath, (results: PetProducts) => PetUIStore.changeAllPetProducts(results))
   }
 
   def pets(petProduct: PetProduct): Binding[HTMLElement] = {

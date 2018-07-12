@@ -7,6 +7,6 @@ trait UnitTest
     with Matchers
     with BeforeAndAfter
     with BeforeAndAfterAll
-    with Logger {
+    with Logging {
 
 }
