@@ -32,5 +32,12 @@ class PetstoreApi @Inject()(petRepo: PetRepo,
       )
   }
 
+  def pets(productIdent: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+    petRepo.pets(productIdent)
+      .map(products =>
+        Ok(Json.toJson(products)).as(JSON)
+      )
+  }
+
 
 }

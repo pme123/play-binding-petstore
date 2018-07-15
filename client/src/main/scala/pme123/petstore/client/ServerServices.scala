@@ -11,12 +11,6 @@ import pme123.petstore.shared._
 object ServerServices
   extends HttpServices {
 
-  def petCategories(): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/petCategories"
-
-    httpGet(apiPath, (results: PetCategories) => PetUIStore.changePetCategories(results))
-  }
-
   def petProducts(petCategory: PetCategory): Binding[HTMLElement] = {
     val apiPath = s"${UIStore.uiState.webContext.value}/api/petProducts/${petCategory.entryName}"
 

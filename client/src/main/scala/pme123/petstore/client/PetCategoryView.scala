@@ -3,18 +3,22 @@ package pme123.petstore.client
 import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
-import pme123.petstore.client.services.ClientUtils
 import pme123.petstore.shared.{PetCategory, PetProduct}
 
-private[client] object PetCategoryView
-  extends ClientUtils {
+import scala.util.matching.Regex
+
+private[client] case class PetCategoryView(categoryName: String)
+  extends MainView {
+
+  PetUIStore.changePetCategory(categoryName)
+
+  val link: String = s"${PetCategoryView.name}/$categoryName"
 
   // 1. level of abstraction
   // **************************
   @dom
-  private[client] def create(): Binding[HTMLElement] = {
+  def create(): Binding[HTMLElement] = {
     val cat = PetUIStore.uiState.petCategory.bind
-    PetUIStore.changePetProducts(cat)
     <div class="">
       {categoryHeader(cat).bind}{//
       categoryDescr(cat).bind}{//
@@ -27,7 +31,7 @@ private[client] object PetCategoryView
 
   @dom
   private def categoryHeader(petCategory: PetCategory) = <h1 class="header">
-    <i class={s"category ${petCategory.styleName} big icon"}></i>&nbsp;&nbsp;{petCategory.entryName}
+    <i class={s"category ${petCategory.styleName} big icon"}></i> &nbsp; &nbsp;{petCategory.entryName}
 
   </h1>
 
@@ -58,7 +62,7 @@ private[client] object PetCategoryView
           </tr>
         </thead>
         <tbody>
-          {for (pp <- PetUIStore.uiState.petProducts) yield productRow(pp).bind}
+          {for (pp <- PetUIStore.uiState.petProductsFor(petCategory)) yield productRow(pp).bind}
         </tbody>
       </table>
     </div>
@@ -84,24 +88,24 @@ private[client] object PetCategoryView
 
   @dom
   private def editButton(petProduct: PetProduct) = {
-      <button class="ui basic icon button"
-              onclick={_: Event =>
-                info("Edit is not implemented")}
-              data:data-tooltip={s"Edit ${petProduct.name}"}
-              data:data-position="bottom right">
-        <i class="edit outline icon"></i>
-      </button>
+    <button class="ui basic icon button"
+            onclick={_: Event =>
+              info("Edit is not implemented")}
+            data:data-tooltip={s"Edit ${petProduct.name}"}
+            data:data-position="bottom right">
+      <i class="edit outline icon"></i>
+    </button>
   }
 
   @dom
   private def showDetailButton(petProduct: PetProduct) = {
-      <button class="ui basic icon button"
-              onclick={_: Event =>
-                info("Show Details is not implemented")}
-              data:data-tooltip={s"Show ${petProduct.name}"}
-              data:data-position="bottom right">
-        <i class="external alternate icon"></i>
-      </button>
+    <button class="ui basic icon button"
+            onclick={_: Event =>
+              info("Show Details is not implemented")}
+            data:data-tooltip={s"Show ${petProduct.name}"}
+            data:data-position="bottom right">
+      <i class="external alternate icon"></i>
+    </button>
   }
 
   @dom
@@ -111,6 +115,11 @@ private[client] object PetCategoryView
     </a>
 
   }
+}
 
+object PetCategoryView {
+  val hashRegex: Regex = """#category/([^/]*)""".r
+
+  def name: String = "category"
 
 }

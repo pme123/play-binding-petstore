@@ -3,7 +3,6 @@ package pme123.petstore.client
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
 import org.scalajs.jquery.jQuery
-import pme123.petstore.client.PetstoreHeader.textFilter
 import pme123.petstore.client.services.ClientUtils
 import pme123.petstore.client.services.SemanticUI.jq2semantic
 

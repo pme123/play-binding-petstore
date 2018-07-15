@@ -28,16 +28,20 @@ private[client] object LeftMenu
   @dom
   private def menuItem(petCategory: PetCategory): Binding[HTMLElement] = {
     val cat = PetUIStore.uiState.petCategory.bind
-    <div class={s"item ${activeStyle(cat == petCategory)}"}
-         onclick={_: Event => PetUIStore.changePetCategory(petCategory)}
-    >
-      <i class={s"category ${petCategory.styleName} big left icon"}></i>
-      <div class="header">
-        {petCategory.entryName}
+    <a
+    href={s"#${PetCategoryView.name}/${petCategory.entryName}"}>
+      <div class={s"item ${activeStyle(cat == petCategory)}"}>
+
+
+        <i class={s"category ${petCategory.styleName} big left icon"}></i>
+        <div class="header">
+          {petCategory.entryName}
+        </div>
+        <div class="description">
+          {petCategory.subTitle}
+        </div>
       </div>
-      <div class="description">
-        {petCategory.subTitle}
-      </div>
-    </div>
+    </a>
+
   }
 }

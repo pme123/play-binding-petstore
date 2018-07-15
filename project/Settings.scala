@@ -90,6 +90,7 @@ object Settings {
     , "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
     , "com.typesafe.play" %%% "play-json" % "2.6.1"
     , "com.thoughtworks.binding" %%% "dom" % bindingV
+    , "com.thoughtworks.binding" %%% "route" % bindingV
     , "com.thoughtworks.binding" %%% "futurebinding" % bindingV
     , "fr.hmil" %%% "roshttp" % "2.0.2"
     // java.time support for ScalaJS

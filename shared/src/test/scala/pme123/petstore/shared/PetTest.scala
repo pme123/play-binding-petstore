@@ -9,7 +9,7 @@ class PetTest extends UnitTest {
   val petProduct2 = PetProduct("CA-124", "Persian", PetCategory.Cats)
 
 
-  val pet = Pet("CA-123", "Mausi", "A nice Supercat", 234, petProduct1)
+  val pet = Pet("CA-123", "A nice Supercat", 12.5, petProduct1)
 
   "Pet" should "be marshaled and un-marshaled correctly" in {
 

@@ -22,6 +22,7 @@ case class PetProduct(
                        category: PetCategory = PetCategory.Dogs,
                        tags: Set[String] = Set.empty
                      ) {
+  def identPrefix:String = name.take(3).toUpperCase
 
 }
 

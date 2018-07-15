@@ -7,6 +7,7 @@ import play.api.libs.json.OFormat
 import scala.collection.immutable
 
 case class Pets(
+               petProduct: PetProduct,
                 pets: List[Pet] = Nil
               )
 
@@ -17,7 +18,6 @@ object Pets {
 
 case class Pet(
                 itemIdent: String,
-                name: String,
                 descr: String,
                 price: Double,
                 product: PetProduct,

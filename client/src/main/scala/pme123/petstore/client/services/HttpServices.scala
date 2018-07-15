@@ -31,7 +31,7 @@ trait HttpServices
         </div>
       case Some(Success(response)) =>
         val json: JsValue = Json.parse(response.responseText)
-        info(s"Json received from $apiPath: ${json.toString().take(20)}")
+        debug(s"Json received from $apiPath: ${json.toString().take(20)}")
         <div>
           {json.validate[A]
           .map(storeChange)

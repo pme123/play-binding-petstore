@@ -21,8 +21,7 @@ object ClientWebsocket
 
   def connectWS() {
     closeWS()
-    val webPath = UIStore.uiState.webPath.value
-    val path = s"$wsURL$webPath"
+    val path = s"$wsURL"
     val socket = new WebSocket(path)
     webSocket.value = Some(socket)
     info(s"Connect to Websocket: $path")

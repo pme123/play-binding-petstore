@@ -10,6 +10,7 @@ GET        /                                    pme123.petstore.server.boundary.
 # API to get all the Jobs that are provided
 GET        /api/petCategories                   pme123.petstore.server.boundary.PetstoreApi.petCategories
 GET        /api/petProducts/:petCategory        pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
+GET        /api/pets/:productIdent              pme123.petstore.server.boundary.PetstoreApi.pets(productIdent: String)
 # API to get all the Client Configs that are registered for a jobConfig
 #GET        /api/petProducts/:jobIdent                      pme123.petstore.server.boundary.PetstoreController.clientConfigs()
 # Map static resources from the /public folder to the /assets URL path

@@ -20,7 +20,8 @@ private[client] object PetMenu
     <div id="pets" class="ui fluid menu">
       <a class="pets item">
         <h4>Pets Catalog
-        <i class="dropdown icon"></i></h4>
+          <i class="dropdown icon"></i>
+        </h4>
       </a>{categoryTable.bind}
     </div>
   }
@@ -30,10 +31,9 @@ private[client] object PetMenu
 
   @dom
   private lazy val categoryTable = {
-    val categories = PetUIStore.uiState.petCategories.bind
     <div class="ui fluid popup bottom left transition hidden">
-      <div class={s"ui ${SemanticUI.columnWide(categories.length)} column relaxed divided grid"}>
-        {Constants(categories.map(menuItem): _*).map(_.bind)}
+      <div class={s"ui ${SemanticUI.columnWide(PetCategory.values.length)} column relaxed divided grid"}>
+        {Constants(PetCategory.values.map(menuItem): _*).map(_.bind)}
       </div>
     </div>
   }
@@ -42,21 +42,21 @@ private[client] object PetMenu
   @dom
   private def menuItem(petCategory: PetCategory): Binding[HTMLElement] = {
     val cat = PetUIStore.uiState.petCategory.bind
-    PetUIStore.uiState.allPetProducts.bind
-    val products = PetUIStore.uiState.petProductsFor(petCategory)
     <div class="column menuLinks">
       <div class="vertical borderless menu">
         <div class={s"item ${activeStyle(cat == petCategory)}"}>
-          <h4
-               onclick={_: Event =>
-                 PetUIStore.changePetCategory(petCategory)
-                 PetUIStore.clearPetProduct()
-                 hidePopup}>
-            <i class={s"category ${petCategory.styleName} big left icon"}></i>{//
-            petCategory.entryName}
+          <h4>
+            <a
+            href={s"#${PetCategoryView.name}/${petCategory.entryName}"}
+            onclick={_: Event =>
+              PetUIStore.changePetCategory(petCategory)
+              PetUIStore.clearPetProduct()
+              hidePopup}>
+              <i class={s"category ${petCategory.styleName} big left icon"}></i>{//
+              petCategory.entryName}
+            </a>
           </h4>
-        </div>
-        {Constants(products.map(productLink): _*).map(_.bind)}
+        </div>{for(product <- PetUIStore.uiState.petProductsFor(petCategory)) yield productLink(product).bind}
       </div>
     </div>
   }
@@ -65,15 +65,17 @@ private[client] object PetMenu
   private def productLink(petProduct: PetProduct) = {
     val prod = PetUIStore.uiState.petProduct.bind
 
-    <div class={s"item ${activeStyle(prod.contains(petProduct))}"}
-    onclick={_: Event =>
-      info("show Product View")
-      PetUIStore.changePetProduct(petProduct)
-      PetUIStore.changePetCategory(petProduct.category)
-      hidePopup}>
+    <a class={s"item ${activeStyle(prod.contains(petProduct))}"}
+       onclick={_: Event =>
+         info("show Product View")
+         PetUIStore.changePetProduct(petProduct)
+         PetUIStore.changePetCategory(petProduct.category)
+         hidePopup}
+       href={s"#${PetProductView.name}/${petProduct.category.entryName}/${petProduct.productIdent}"}>
       {petProduct.name}
-    </div>
+    </a>
   }
+
   private def hidePopup = {
     setTimeout(200) {
       jQuery(".pets").popup("hide")

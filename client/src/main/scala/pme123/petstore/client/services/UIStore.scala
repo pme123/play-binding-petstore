@@ -15,15 +15,8 @@ object UIStore extends Logging {
     webContext
   }
 
-  def changeWebPath(webPath: String): String = {
-    info(s"UIStore: changeWebPath $webPath")
-    uiState.webPath.value = webPath
-    webPath
-  }
-
   case class UIState(
-                      webContext: Var[String] = Var(""),
-                      webPath: Var[String] = Var("")
+                      webContext: Var[String] = Var("")
                     )
 
 
