@@ -21,7 +21,7 @@ abstract class SPAController(bpfComps: SPAComponents)
   lazy val accessControl: AccessControl = bpfComps.accessControl
 
   def pageConfig(maybeUsername: Option[String]): Future[PageConfig] =
-      Future.successful(PageConfig(context, "", env.isDev))
+      Future.successful(PageConfig(context, env.isDev))
 
 
   private def context: String = {

@@ -56,8 +56,8 @@ object PetstoreClient
   // this is called by the index.scala.html of the server.
   // the only connection that is not type-safe!
   @JSExportTopLevel("client.PetstoreClient.main")
-  def main(context: String, webPath: String) {
-    initClient(context, webPath)
+  def main(context: String) {
+    initClient(context)
 
 
     dom.render(document.body, render)
@@ -91,7 +91,7 @@ object PetstoreClient
   @dom
   private lazy val initCategories: Binding[HTMLElement] = {
     <div>
-      {Constants(PetCategory.values.map(initProducts):_*).map(_.bind)}
+      {Constants(PetCategory.values.map(initProducts): _*).map(_.bind)}
     </div>
   }
 

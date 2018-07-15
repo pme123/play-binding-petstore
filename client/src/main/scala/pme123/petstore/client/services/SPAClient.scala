@@ -10,9 +10,8 @@ trait SPAClient
 
   LoggerConfig.factory = ConsoleLoggerFactory()
 
-  def initClient(context: String
-                 , webPath: String): Unit = {
-    info(s"Init client with: $context$webPath")
+  def initClient(context: String): Unit = {
+    info(s"Init client with Context: $context")
     UIStore.changeWebContext(context)
     //ClientWebsocket.connectWS()
   }
