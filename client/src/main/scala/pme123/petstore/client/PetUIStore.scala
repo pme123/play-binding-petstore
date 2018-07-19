@@ -50,10 +50,28 @@ object PetUIStore extends Logging {
   }
 
   def changePets(pets: Pets): Pets = {
+    Pets(pets.petProduct, changePets(pets.pets))
+  }
+
+  def changePets(pets: List[Pet]): List[Pet] = {
     info(s"UIStore: changePets $pets")
     uiState.pets.value.clear()
-    uiState.pets.value ++= pets.pets
+    uiState.pets.value ++= pets
     pets
+  }
+
+  def changePetTags(tags: Seq[String]): Seq[String] = {
+    info(s"UIStore: changePetTags $tags")
+    uiState.petTags.value.clear()
+    uiState.petTags.value ++= tags
+    tags
+  }
+
+  def changeProductTags(tags: Seq[String]): Seq[String] = {
+    info(s"UIStore: changeProductTags $tags")
+    uiState.productTags.value.clear()
+    uiState.productTags.value ++= tags
+    tags
   }
 
   // make sure all are closed
@@ -66,6 +84,8 @@ object PetUIStore extends Logging {
                       petCategory: Var[PetCategory] = Var(PetCategory.Dogs),
                       petProduct: Var[Option[PetProduct]] = Var(None),
                       allPetProducts: Var[Map[PetCategory, Vars[PetProduct]]] = UIState.initAllPetProducts(),
+                      petTags: Vars[String] = Vars(),
+                      productTags: Vars[String] = Vars(),
                       pets: Vars[Pet] = Vars()
                     ) {
 

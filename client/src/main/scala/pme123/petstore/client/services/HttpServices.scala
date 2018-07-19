@@ -1,6 +1,7 @@
 package pme123.petstore.client.services
 
 import com.thoughtworks.binding.{Binding, FutureBinding, dom}
+import org.scalajs.dom.ext.Ajax.InputData
 import org.scalajs.dom.ext.{Ajax, AjaxException}
 import org.scalajs.dom.raw.{HTMLElement, XMLHttpRequest}
 import play.api.libs.json._
@@ -14,9 +15,15 @@ trait HttpServices
   extends Logging {
 
   def httpGet[A](apiPath: String
-                  , storeChange: A => Unit)
-                 (implicit reads: Reads[A]): Binding[HTMLElement] =
+                 , storeChange: A => Unit)
+                (implicit reads: Reads[A]): Binding[HTMLElement] =
     callService[A](apiPath, Ajax.get(apiPath), storeChange)
+
+  def httpPut[A, B](apiPath: String
+                , body: B
+                 , storeChange: A => Unit)
+                (implicit reads: Reads[A], writes: Writes[B]): Binding[HTMLElement] =
+    callService[A](apiPath, Ajax.put(apiPath, InputData.str2ajax(Json.toJson(body).toString())), storeChange)
 
   @dom
   def callService[A](apiPath: String

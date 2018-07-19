@@ -20,9 +20,7 @@ private[client] object PetstoreHeader
       {faviconElem.bind}{//
       title.bind //
       }{spacer.bind}{//
-      PetMenu.create().bind}
-      {//
-      textFilter.bind}{//
+      PetMenu.create().bind}{//
       shoppingCardButton.bind}{//
       logInButton.bind}
     </div>
@@ -50,40 +48,6 @@ private[client] object PetstoreHeader
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
         </h4>
         <div class="meta"></div>
-      </div>
-    </div>
-  }
-
-  // filterInput references to the id of the input (macro magic)
-  // this creates a compile exception in intellij
-  @dom
-  private def textFilter = {
-    <div class="ui item right">
-      <div class="ui right pointing dropdown basic icon button">
-        <i class="search icon large"></i>
-        <div class="vertical menu">
-          <div class="ui left search icon input">
-            <i class="search icon"></i>
-            <input type="text" name="search" placeholder="Search..."
-                   onkeyup={_: Event =>}/>
-          </div>
-          <div class="header">
-            <i class="tags icon"></i>
-            Tag Label
-          </div>
-          <div class="item">
-            <div class="ui red empty circular label"></div>
-            Important
-          </div>
-          <div class="item">
-            <div class="ui blue empty circular label"></div>
-            Announcement
-          </div>
-          <div class="item">
-            <div class="ui black empty circular label"></div>
-            Discussion
-          </div>
-        </div>
       </div>
     </div>
   }

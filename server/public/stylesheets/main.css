@@ -1,6 +1,7 @@
-.category, .product {
+.ui .category, .ui .label .category, .product {
     background-size: 1.18em 1em;
     background-repeat: no-repeat;
+    width: 1.18em;
 }
 .fish {
     background-image: url("../images/fish.png");

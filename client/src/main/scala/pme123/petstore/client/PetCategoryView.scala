@@ -107,14 +107,6 @@ private[client] case class PetCategoryView(categoryName: String)
       <i class="external alternate icon"></i>
     </button>
   }
-
-  @dom
-  private def tagLink(tag: String) = {
-    <a class="ui tag label">
-      {tag}
-    </a>
-
-  }
 }
 
 object PetCategoryView {

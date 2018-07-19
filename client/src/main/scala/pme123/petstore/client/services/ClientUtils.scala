@@ -58,6 +58,12 @@ trait ClientUtils
       <img class="defaultImage" src={imageUrl}/>
     </td>
 
+  @dom
+  def tagLink(tag: String): Binding[HTMLElement] =
+    <div class="ui tag label">
+      {tag}
+    </div>
+
   def activeStyle(isActive:Boolean):String = if(isActive) "active blue" else ""
 
 }

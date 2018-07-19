@@ -2,7 +2,7 @@ package pme123.petstore.server.control
 
 
 import javax.inject.{Inject, Singleton}
-import pme123.petstore.shared.PetCategory.{Birds, Dogs}
+import pme123.petstore.shared.PetCategory.{Birds, Dogs, Fish}
 import pme123.petstore.shared._
 
 import scala.collection.mutable
@@ -12,11 +12,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class PetRepo @Inject()()
                        (implicit val ec: ExecutionContext) {
 
-  def petCategories(): Future[PetCategories] =
+  def productTags(): Future[Seq[String]] =
     Future.successful(
-      PetCategories(
-        PetCategory.values.toList
-      )
+      PetProductsRepo.tags
+    )
+
+  def petTags(): Future[Seq[String]] =
+    Future.successful(
+      PetsRepo.tags
     )
 
   def petProducts(petCategory: PetCategory): Future[PetProducts] =
@@ -34,26 +37,37 @@ class PetRepo @Inject()()
       )
     }
   }
+
+  def filter(petFilter: PetFilter): Future[Seq[Pet]] = {
+    Future {
+      PetsRepo.filter(petFilter)
+    }
+  }
 }
 
 object PetsRepo {
 
   import PetProductsRepo._
 
+  lazy val tags = Seq("male", "female")
+
   lazy val pets =
     List(
       Pet(nextItemIdent(parrot),
         "Adult Male Amazon Parrot",
-        193.5, parrot),
+        193.5, parrot, tags = Set("male")),
       Pet(nextItemIdent(finch),
         "Adult Male Finch",
-        34.95, finch),
+        34.95, finch, tags = Set("male")),
       Pet(nextItemIdent(bulldog),
         "Male Adult Bulldog",
         342, bulldog, tags = Set("male")),
       Pet(nextItemIdent(bulldog),
         "Female Puppy Bulldog",
-        367, bulldog, tags = Set("female"))
+        367, bulldog, tags = Set("female")),
+      Pet(nextItemIdent(shark),
+        "Crazy and Dangerous Tiger Shark!",
+        1345, shark, tags = Set("female"))
     )
 
   private val petIdentMap = mutable.Map[String, Int]()
@@ -65,16 +79,24 @@ object PetsRepo {
     f"$prefix-$nextIdent%03d"
   }
 
+  def filter(petFilter: PetFilter): Seq[Pet] =
+    pets.filter(p => petFilter.categories.isEmpty || petFilter.categories.contains(p.product.category.entryName))
+      .filter(p => petFilter.petTags.isEmpty || petFilter.petTags.exists(p.tags.contains))
+      .filter(p => petFilter.productTags.isEmpty || petFilter.productTags.exists(p.product.tags.contains))
+
 }
 
 object PetProductsRepo {
+
+  lazy val tags = Seq("tropical", "talks")
 
   lazy val petProducts =
     List(
       parrot,
       finch,
       bulldog,
-      poodle
+      poodle,
+      shark
     )
 
   def petProduct(productIdent: String): PetProduct =
@@ -94,6 +116,9 @@ object PetProductsRepo {
   lazy val poodle = PetProduct(nextProductIdent(Dogs),
     "Poodle",
     Dogs)
+  lazy val shark = PetProduct(nextProductIdent(Fish),
+  "Tiger Shark",
+    Fish, Set("tropical"))
 
   private val productIdentMap = mutable.Map[String, Int]()
 

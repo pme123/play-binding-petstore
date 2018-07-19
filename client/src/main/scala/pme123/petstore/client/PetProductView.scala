@@ -8,7 +8,7 @@ import pme123.petstore.shared.{Pet, PetProduct}
 import scala.util.matching.Regex
 
 private[client] case class PetProductView(categoryName: String, productIdent: String)
-  extends MainView {
+  extends PetTable {
 
   private val petCategory = PetUIStore.changePetCategory(categoryName)
 
@@ -38,7 +38,7 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
     <div class="">
       {productHeader(petProduct).bind}{//
       productDescr(petProduct).bind}{//
-      productTable(petProduct).bind}
+      petTable.bind}
     </div>
   }
 
@@ -53,87 +53,6 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
     <h4 class="description">
       {Constants(petProduct.tags.map(tagLink).toList: _*).map(_.bind)}
     </h4>
-
-  @dom
-  private def productTable(petProduct: PetProduct) = {
-    <div class="content">
-      <table class="ui padded table">
-        <thead>
-          <tr>
-            <th>
-              Name
-            </th>
-            <th>
-              Pet Product
-            </th>
-            <th>
-              Price
-            </th>
-            <th>
-              Tags
-            </th>
-            <th>
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {for (pets <- PetUIStore.uiState.pets) yield petRow(pets).bind}
-        </tbody>
-      </table>
-    </div>
-  }
-
-  @dom
-  private def petRow(pet: Pet) =
-    <tr>
-      <td class="four wide">
-        {pet.itemIdent}
-      </td>
-      <td class="three wide">
-        {pet.product.name}
-      </td>
-      <td class="two wide right">
-        {f"${pet.price}%.2f"}
-      </td>
-      <td class="five wide">
-        {Constants(pet.tags.map(tagLink).toList: _*).map(_.bind)}
-      </td>
-      <td class="two wide">
-        {editButton(pet).bind}{//
-        showDetailButton(pet).bind}
-      </td>
-    </tr>
-
-  @dom
-  private def editButton(pet: Pet) = {
-    <button class="ui basic icon button"
-            onclick={_: Event =>
-              info("Edit is not implemented")}
-            data:data-tooltip={s"Edit ${pet.itemIdent}"}
-            data:data-position="bottom right">
-      <i class="edit outline icon"></i>
-    </button>
-  }
-
-  @dom
-  private def showDetailButton(pet: Pet) = {
-    <button class="ui basic icon button"
-            onclick={_: Event =>
-              info("Show Details is not implemented")}
-            data:data-tooltip={s"Show ${pet.itemIdent}"}
-            data:data-position="bottom right">
-      <i class="external alternate icon"></i>
-    </button>
-  }
-
-  @dom
-  private def tagLink(tag: String) = {
-    <a class="ui tag label">
-      {tag}
-    </a>
-
-  }
 
 }
 
