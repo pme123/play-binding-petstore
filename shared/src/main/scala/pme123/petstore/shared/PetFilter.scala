@@ -3,9 +3,19 @@ package pme123.petstore.shared
 import julienrf.json.derived
 import play.api.libs.json.OFormat
 
-case class PetFilter(categories: Seq[PetFilter.Category] = Nil,
+case class PetFilter(petDescr: Option[String] = None,
+                     product: Option[String] = None,
+                     categories: Seq[PetFilter.Category] = Nil,
                      petTags: Seq[PetFilter.PetTag] = Nil,
                      productTags: Seq[PetFilter.ProductTag] = Nil) {
+
+  def withPetDescr(petDescr: Option[String]): PetFilter = {
+    copy(petDescr = petDescr)
+  }
+
+  def withProduct(product: Option[String]): PetFilter = {
+    copy(product = product)
+  }
 
   def withCategories(categories: String): PetFilter = {
     if (categories.nonEmpty) {

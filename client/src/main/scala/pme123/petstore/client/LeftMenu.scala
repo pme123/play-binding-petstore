@@ -15,8 +15,10 @@ private[client] object LeftMenu
   private[client] def create(): Binding[HTMLElement] = {
     <div class="four wide column">
       <div class="ui basic segment">
-        <div class="ui vertical menu">
+        <div class="ui fluid vertical menu">
           {filterHeader.bind}{//
+          petDescrInput.bind}{//
+          productInput.bind}{//
           categorySelect.bind}{//
           petTagSelect.bind}{//
           productTagSelect.bind}
@@ -37,12 +39,36 @@ private[client] object LeftMenu
   </div>
 
   @dom
+  private lazy val petDescrInput =
+    <div class="item">
+      <div class="ui input">
+        <input id="petDescrFilter"
+               type="text"
+               placeholder="Pet Description..."
+               onkeyup={_: Event =>
+                 UIFilter.changePetDescr(petDescrFilter.value)}/>
+      </div>
+    </div>
+
+  @dom
+  private lazy val productInput =
+    <div class="item">
+      <div class="ui input">
+        <input id="productFilter"
+               type="text"
+               placeholder="Product..."
+               onkeyup={_: Event =>
+                 UIFilter.changeProduct(productFilter.value)}/>
+      </div>
+    </div>
+
+  @dom
   private lazy val categorySelect =
     <div class="item">
       <div class="ui multiple dropdown">
-        <input type="hidden" id="categories"
+        <input type="hidden" id="categoriesFilter"
                onchange={_: Event =>
-                 UIFilter.changeCategories(categories.value)}/>
+                 UIFilter.changeCategories(categoriesFilter.value)}/>
         <i class="filter icon"></i>
         <span class="text">Pet Categories</span>
         <div class="menu">
@@ -64,9 +90,9 @@ private[client] object LeftMenu
     <div class="item">
       <div class="ui multiple dropdown">
         <input type="hidden"
-               id="petTags"
+               id="petTagsFilter"
                onchange={_: Event =>
-                 UIFilter.changePetTags(petTags.value)}/>
+                 UIFilter.changePetTags(petTagsFilter.value)}/>
         <i class="filter icon"></i>
         <span class="text">Pet Tags</span>
         <div class="menu">
@@ -90,9 +116,9 @@ private[client] object LeftMenu
     <div class="item">
       <div class="ui multiple dropdown">
         <input type="hidden"
-               id="productTags"
+               id="productTagsFilter"
                onchange={_: Event =>
-                 UIFilter.changeProductTags(productTags.value)}/>
+                 UIFilter.changeProductTags(productTagsFilter.value)}/>
         <i class="filter icon"></i>
         <span class="text">Pet Tags</span>
         <div class="menu">

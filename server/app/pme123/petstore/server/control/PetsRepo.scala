@@ -80,9 +80,15 @@ object PetsRepo {
   }
 
   def filter(petFilter: PetFilter): Seq[Pet] =
-    pets.filter(p => petFilter.categories.isEmpty || petFilter.categories.contains(p.product.category.entryName))
+    pets.filter(p => filterText(petFilter.petDescr, p.descr))
+      .filter(p => filterText(petFilter.product, p.product.name))
+      .filter(p => petFilter.categories.isEmpty || petFilter.categories.contains(p.product.category.entryName))
       .filter(p => petFilter.petTags.isEmpty || petFilter.petTags.exists(p.tags.contains))
       .filter(p => petFilter.productTags.isEmpty || petFilter.productTags.exists(p.product.tags.contains))
+
+  private def filterText(filter: Option[String], text: String): Boolean =
+    filter.isEmpty || text.toLowerCase.contains(filter.get.toLowerCase())
+
 
 }
 
@@ -117,7 +123,7 @@ object PetProductsRepo {
     "Poodle",
     Dogs)
   lazy val shark = PetProduct(nextProductIdent(Fish),
-  "Tiger Shark",
+    "Tiger Shark",
     Fish, Set("tropical"))
 
   private val productIdentMap = mutable.Map[String, Int]()

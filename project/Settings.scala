@@ -57,6 +57,7 @@ object Settings {
     , filters
     , "org.apache.commons" % "commons-email" % "1.3.1"
     , "biz.enef" %% "slogging-slf4j" % sloggingV
+    , "org.apache.poi" % "poi" % "3.17"
     // scalajs for server
     , "com.vmunier" %% "scalajs-scripts" % "1.1.1"
     // webjars for Semantic-UI

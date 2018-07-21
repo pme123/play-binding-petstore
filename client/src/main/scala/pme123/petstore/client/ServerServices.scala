@@ -38,8 +38,9 @@ object ServerServices
   @dom
   val runFilter: Binding[HTMLElement] = {
     val filter = UIFilter.filter.bind
-    if (filter.isDefined)
-      UIRoute.route.state.value = PetFilterView
+    if (filter.isDefined) {
+      UIRoute.changeRoute(PetFilterView)
+    }
     val apiPath = s"${UIStore.uiState.webContext.value}/api/filter"
     <div>
       {httpPut(apiPath, filter, (results: List[Pet]) => PetUIStore.changePets(results)).bind}

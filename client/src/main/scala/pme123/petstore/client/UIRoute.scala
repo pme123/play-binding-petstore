@@ -7,6 +7,7 @@ import pme123.petstore.shared.PetCategory
 
 object UIRoute {
 
+
   def createView(hashText: String): MainView = hashText match {
     case PetFilterView.hashRegex() =>
       info(s"PetFilterView")
@@ -21,6 +22,12 @@ object UIRoute {
       info(s"PetCategoryView!!: $hashText")
       PetCategoryView(PetCategory.Dogs.entryName)
   }
+
+  def changeRoute(view: MainView) = {
+    if(route.state.value != view)
+      route.state.value = view
+  }
+
 
   info("org.scalajs.dom.window.location: " + window.location)
 
