@@ -40,7 +40,10 @@ class PetRepo @Inject()()
 
   def filter(petFilter: PetFilter): Future[Seq[Pet]] = {
     Future {
-      PetsRepo.filter(petFilter)
+      if(petFilter.nonEmpty)
+        PetsRepo.filter(petFilter)
+      else
+        Nil
     }
   }
 }
@@ -82,12 +85,15 @@ object PetsRepo {
   def filter(petFilter: PetFilter): Seq[Pet] =
     pets.filter(p => filterText(petFilter.petDescr, p.descr))
       .filter(p => filterText(petFilter.product, p.product.name))
+      .filter(p => filterTextSeq(petFilter.petTags, p.tags))
+      .filter(p => filterTextSeq(petFilter.productTags, p.product.tags))
       .filter(p => petFilter.categories.isEmpty || petFilter.categories.contains(p.product.category.entryName))
-      .filter(p => petFilter.petTags.isEmpty || petFilter.petTags.exists(p.tags.contains))
-      .filter(p => petFilter.productTags.isEmpty || petFilter.productTags.exists(p.product.tags.contains))
 
   private def filterText(filter: Option[String], text: String): Boolean =
     filter.isEmpty || text.toLowerCase.contains(filter.get.toLowerCase())
+
+  private def filterTextSeq(filter: Seq[String], textSet: Set[String]): Boolean =
+    filter.isEmpty || filter.exists(textSet.contains)
 
 
 }

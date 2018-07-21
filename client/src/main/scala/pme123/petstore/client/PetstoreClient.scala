@@ -43,14 +43,15 @@ object PetstoreClient
 
     <div class="">
       {//
-      ServerServices.runFilter.bind}{//
       initCategories.bind}{//
       PetstoreHeader.create().bind}<div class="ui four column doubling stackable grid">
       {//
       LeftMenu.create().bind //
       }<div class="twelve wide column">
         <div class="ui basic segment">
-          {mainView.bind.create().bind}
+          {//
+          ServerServices.runFilter.bind}{//
+          mainView.bind.create().bind}
         </div>
       </div>
     </div>

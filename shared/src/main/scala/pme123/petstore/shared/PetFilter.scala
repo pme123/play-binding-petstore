@@ -9,6 +9,10 @@ case class PetFilter(petDescr: Option[String] = None,
                      petTags: Seq[PetFilter.PetTag] = Nil,
                      productTags: Seq[PetFilter.ProductTag] = Nil) {
 
+  val nonEmpty: Boolean =
+    petDescr.nonEmpty || product.nonEmpty || categories.nonEmpty || petTags.nonEmpty || productTags.nonEmpty
+
+
   def withPetDescr(petDescr: Option[String]): PetFilter = {
     copy(petDescr = petDescr)
   }

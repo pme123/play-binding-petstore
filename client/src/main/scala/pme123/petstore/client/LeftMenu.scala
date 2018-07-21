@@ -120,7 +120,7 @@ private[client] object LeftMenu
                onchange={_: Event =>
                  UIFilter.changeProductTags(productTagsFilter.value)}/>
         <i class="filter icon"></i>
-        <span class="text">Pet Tags</span>
+        <span class="text">Product Tags</span>
         <div class="menu">
           {Constants(PetUIStore.uiState.productTags.value.map(productTagItem): _*).map(_.bind)}
         </div>
