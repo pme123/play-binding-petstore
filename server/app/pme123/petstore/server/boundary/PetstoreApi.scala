@@ -3,6 +3,7 @@ package pme123.petstore.server.boundary
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
+import pme123.petstore.server.boundary.services.{SPAComponents, SPAController}
 import pme123.petstore.server.control.PetRepo
 import pme123.petstore.shared.{Pet, PetFilter}
 

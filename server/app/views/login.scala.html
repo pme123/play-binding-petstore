@@ -1,0 +1,80 @@
+@import pme123.petstore.server.entity.PageConfig
+@import pme123.petstore.server.entity.Identity
+
+
+@this(webJarsUtil: org.webjars.play.WebJarsUtil, assets: AssetsFinder, header: views.html.header)
+
+@(pageConfig: PageConfig,
+        form: Form[Identity],
+        postUrl: Call)(implicit request: Request[_])
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+        @header(pageConfig)
+
+    <style type="text/css">
+
+            body > .grid {
+                height: 100%;
+            }
+
+            #login-logo {
+                margin-top: -150px;
+                margin-bottom: 40px;
+            }
+
+            .column {
+                max-width: 450px;
+            }
+    </style>
+    </head>
+    <body>
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h3 class="ui image header">
+                    <div class="ui item login-logo" id="login-logo">
+                    </div>
+                    <div class="content">
+                        Log in
+                    </div>
+                </h3>
+                @request.flash.data.map { case (name, value) =>
+                <div class="ui @name message">@value</div>
+                }
+                @* Global errors are not tied to any particular form field *@
+                @if(form.hasGlobalErrors) {
+                    @form.globalErrors.map { error: FormError =>
+                        <div class="ui error message">
+                            Error: @error.key: @error.message
+                        </div>
+                    }
+                }
+
+                <form action="@postUrl" method="post" id="user-login-form" class="ui large form">
+                    @helper.CSRF.formField
+                    <div class="ui segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input id="username" type="text" name="username" placeholder="Username">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input id="password" type="password" name="password" placeholder="Password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="ui fluid large submit button">Login</button>
+
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>

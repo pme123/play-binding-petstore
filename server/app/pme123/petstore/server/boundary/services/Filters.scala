@@ -10,6 +10,7 @@ import play.api.http.DefaultHttpFilters
 import play.api.libs.streams.Accumulator
 import play.api.mvc._
 import play.filters.cors.CORSFilter
+import play.filters.csrf.CSRFFilter
 import play.filters.headers.SecurityHeadersFilter
 import play.filters.hosts.AllowedHostsFilter
 
@@ -28,9 +29,10 @@ class ProdFilters @Inject()(log: LoggingFilter
                             , error: ErrorHandlingFilter
                             , securityHeadersFilter: SecurityHeadersFilter // see https://www.playframework.com/documentation/2.5.x/SecurityHeaders#configuring-security-headers
                             , corsFilter: CORSFilter // see https://www.playframework.com/documentation/2.5.x/CorsFilter
+                            , csrfFilter: CSRFFilter
                             , allowedHostsFilter: AllowedHostsFilter // see https://www.playframework.com/documentation/2.5.x/AllowedHostsFilter
                            )
-  extends DefaultHttpFilters(log, error, securityHeadersFilter, corsFilter, allowedHostsFilter)
+  extends DefaultHttpFilters(log, error, securityHeadersFilter, corsFilter, csrfFilter, allowedHostsFilter)
 
 class NoFilters @Inject()()
   extends DefaultHttpFilters()

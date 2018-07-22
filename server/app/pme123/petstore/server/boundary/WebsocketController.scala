@@ -8,6 +8,7 @@ import akka.util.Timeout
 import javax.inject.{Inject, Named}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import pme123.petstore.server.boundary.services.{SPAComponents, SPAController}
 import pme123.petstore.server.control.services.ClientParentActor.RegisterClient
 import pme123.petstore.server.control.services.SameOriginCheck
 
@@ -17,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class WebsocketController @Inject()(@Named("clientParentActor")
                                     clientParentActor: ActorRef,
                                     pc: SPAComponents)
-                                   (implicit ec: ExecutionContext)
+                                   (implicit val ec: ExecutionContext)
   extends SPAController(pc)
     with SameOriginCheck {
 

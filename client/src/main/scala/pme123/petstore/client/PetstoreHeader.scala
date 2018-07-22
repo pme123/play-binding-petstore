@@ -2,12 +2,9 @@ package pme123.petstore.client
 
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
-import org.scalajs.jquery.jQuery
-import pme123.petstore.client.services.ClientUtils
-import pme123.petstore.client.services.SemanticUI.jq2semantic
+import pme123.petstore.client.services.{ClientUtils, UIStore}
 
 import scala.language.implicitConversions
-import scala.scalajs.js.timers.setTimeout
 
 private[client] object PetstoreHeader
   extends ClientUtils {
@@ -67,18 +64,31 @@ private[client] object PetstoreHeader
 
   @dom
   private def logInButton = {
-    <div class="ui item">
-      <button class="ui basic icon button"
-              onclick={_: Event =>
-                info("LOG IN is not implemented")
-                setTimeout(200) {
-                  jQuery(".ui.modal").modal("show")
-                }}
-              data:data-tooltip="Log In"
-              data:data-position="bottom right">
+    val user = UIStore.uiState.loggedInUser.bind
+    if (user.isDefined)
+      <div class="ui item">
+        <div class="ui floating dropdown labeled icon button">
+          <i class="user icon"></i>
+          <span class="text">
+            {user.get.fullName}
+          </span>
+          <div class="menu">
+            <a href={s"${UIStore.uiState.webContext.value}/auth/logout"} class="item">Log Out</a>
+          </div>
+        </div>
+      </div>
+    else
+      <div class="ui item">
+        {ServerServices.loggedInUser().bind //
+        }<button class="ui basic icon button"
+                 onclick={_: Event =>
+                   info("LOG IN is not implemented")
+                   }
+                 data:data-tooltip="Log In"
+                 data:data-position="bottom right">
         <i class="sign in alternate icon large"></i>
       </button>
-    </div>
+      </div>
   }
 
 

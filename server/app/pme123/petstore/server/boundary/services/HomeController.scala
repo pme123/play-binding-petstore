@@ -1,4 +1,4 @@
-package pme123.petstore.server.boundary
+package pme123.petstore.server.boundary.services
 
 import javax.inject._
 import play.api.mvc._
@@ -10,9 +10,9 @@ import scala.concurrent.ExecutionContext
   * Original see here: https://github.com/playframework/play-scala-websocket-example
   */
 @Singleton
-class PetstoreController @Inject()(template: views.html.index
-                                   , val spaComps: SPAComponents)
-                                  (implicit val ec: ExecutionContext)
+class HomeController @Inject()(template: views.html.index
+                               , val spaComps: SPAComponents)
+                              (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
   def index(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>

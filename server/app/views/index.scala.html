@@ -1,22 +1,16 @@
 @import pme123.petstore.server.entity.PageConfig
 
-@this(webJarsUtil: org.webjars.play.WebJarsUtil, assets: AssetsFinder)
+@this(webJarsUtil: org.webjars.play.WebJarsUtil, assets: AssetsFinder, header: views.html.header)
 
 @(pageConfig: PageConfig)(implicit r: Request[_], rh: RequestHeader)
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Pet Store - Play Binding Demo</title>
-            <!-- favicon -->
-        <link rel="shortcut icon" type="image/png" href="@assets.withUrlPrefix(pageConfig.context).path("assets/images/favicon.png")">
-            <!-- IE with compatibility mode -->
-        <meta http-equiv="x-ua-compatible" content="IE=edge">
-            <!-- Semantic-UI Styles-->
-        @Html(webJarsUtil.css("semantic.min.css"))
-            <!-- scala-adapters Styles -->
-        @Html("<link rel=stylesheet type=text/css href=" + assets.withUrlPrefix(pageConfig.context).path("assets/stylesheets/main.css") + ">")
-            <!-- for scalajs routing -->
+
+        @header(pageConfig)
+
+             <!-- for scalajs routing -->
         @helper.javascriptRouter("jsRoutes")(routes.javascript.Assets.versioned)
 
         @Html("<script src=" + assets.withUrlPrefix(pageConfig.context).path("assets/javascripts/versioned.js") + " ></script>")
@@ -37,8 +31,7 @@
 
             <!-- the Client code -->
         <script src=@(s"${pageConfig.context}/assets/${pageConfig.projectName}-client-jsdeps${if(pageConfig.isDevMode) "" else ".min"}.js") ></script>
-        <script src=@(s"${pageConfig.context}/assets/${pageConfig.projectName}-client-${if(pageConfig.isDevMode) "fast" else ""}opt.js")
-         ></script>
+        <script src=@(s"${pageConfig.context}/assets/${pageConfig.projectName}-client-${if(pageConfig.isDevMode) "fast" else ""}opt.js") ></script>
 
     </head>
     <body>

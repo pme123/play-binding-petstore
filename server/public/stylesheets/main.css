@@ -27,3 +27,11 @@
     border: none;
     box-shadow: none;
 }
+
+#logo-img, .login-logo {
+    background-image: url("../images/favicon.png");
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 80px;
+    background-size: 80px 80px;
+}

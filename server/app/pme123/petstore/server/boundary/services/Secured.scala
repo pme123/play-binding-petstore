@@ -1,10 +1,12 @@
 package pme123.petstore.server.boundary.services
 
+import controllers.Assets
 import javax.inject.Inject
 import play.Environment
 import play.api.Logger
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import pme123.petstore.shared.services.AccessControl
+import pme123.petstore.shared.services.{AccessControl, AuthUser, Logging}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -20,7 +22,10 @@ import scala.concurrent.{ExecutionContext, Future}
   * def isValidUser(user: String, pwd: String): Boolean
   *
   */
-trait Secured {
+trait Secured
+  extends Logging {
+
+  import Secured._
 
   lazy val accessLogger = Logger("access-filter")
 
@@ -30,29 +35,33 @@ trait Secured {
 
   def accessControl: AccessControl
 
+  implicit def ec: ExecutionContext
+
   /**
     * Request action builder that allows to add authentication
     * behavior to all specified actions.
-    *
-    * @return
     */
-  def AuthenticatedAction: ActionBuilder[Request, AnyContent] = new ActionBuilder[Request, AnyContent] {
+  def AuthenticatedAction: ActionBuilder[Request, AnyContent] = BPFActionBuilder(false)
+
+  def AdminAction: ActionBuilder[Request, AnyContent] = BPFActionBuilder(true)
+
+  case class BPFActionBuilder(isAdminAction: Boolean) extends ActionBuilder[Request, AnyContent] {
 
     def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
       accessLogger.info(s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}")
       if (env.isTest) {
         block(request)
-      } else
-        request.headers.get("Authorization").flatMap { authorization =>
-          authorization.split(" ").drop(1).headOption.filter { encoded =>
-            new String(org.apache.commons.codec.binary.Base64.decodeBase64(encoded.getBytes)).split(":").toList match {
-              case u :: p :: Nil if accessControl.isValidUser(u, p) => true
-              case _ => false
-            }
-          }.map(_ => block(request))
-        }.getOrElse {
-          Future.successful(Results.Unauthorized.withHeaders("WWW-Authenticate" -> """Basic realm="Secured""""))
+      } else {
+        extractUser(request) match {
+          case None =>
+            Future.successful(Redirect(routes.AuthController.showLoginForm()))
+          case Some(u) if !isAdminAction || (isAdminAction && u.isAdmin) =>
+            block(request)
+          case Some(u) =>
+            warn(s"User $u has no admin rights for!")
+            Future.successful(Assets.Unauthorized(s"You ($u) have no admin rights to access ${request.uri}!"))
         }
+      }
     }
 
     def parser: BodyParser[AnyContent] = cc.parsers.defaultBodyParser
@@ -69,5 +78,23 @@ trait Secured {
       new UserRequest(request.session.get("username"), request)
     }
   }
+
+  // extracts the username from the Header
+  protected def extractUser(implicit request: RequestHeader): Option[AuthUser] =
+
+    request.session.get(SESSION_USERNAME_KEY).map { userId =>
+      val groups =
+        request.session.get(SESSION_GROUPS_KEY)
+          .map(_.split(SESSION_GROUPS_SEPARATOR).toSeq).getOrElse(Nil)
+
+      AuthUser(userId, groups)
+    }
+
+}
+
+object Secured {
+  val SESSION_USERNAME_KEY = "username"
+  val SESSION_GROUPS_KEY = "groups"
+  val SESSION_GROUPS_SEPARATOR = ","
 
 }

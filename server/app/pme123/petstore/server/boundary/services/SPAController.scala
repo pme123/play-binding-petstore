@@ -1,12 +1,11 @@
-package pme123.petstore.server.boundary
+package pme123.petstore.server.boundary.services
 
 import play.Environment
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import pme123.petstore.server.boundary.services.Secured
 import pme123.petstore.server.control.PetConfiguration
 import pme123.petstore.server.entity.PageConfig
-import pme123.petstore.shared.services.{AccessControl, Logging}
+import pme123.petstore.shared.services.{AccessControl, AuthUser, Logging}
 
 import scala.concurrent.Future
 
@@ -21,7 +20,7 @@ abstract class SPAController(spaComps: SPAComponents)
   lazy val cc: ControllerComponents = spaComps.cc
   lazy val accessControl: AccessControl = spaComps.accessControl
 
-  def pageConfig(maybeUsername: Option[String]): Future[PageConfig] =
+  def pageConfig(maybeUser: Option[AuthUser]): Future[PageConfig] =
     Future.successful(PageConfig(context, env.isDev))
 
 

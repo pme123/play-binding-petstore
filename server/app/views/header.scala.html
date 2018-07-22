@@ -1,0 +1,15 @@
+@import pme123.petstore.server.entity.PageConfig
+
+@this(webJarsUtil: org.webjars.play.WebJarsUtil, assets: AssetsFinder)
+
+@(pageConfig: PageConfig)
+
+<title>Pet Store - Play Binding Demo</title>
+    <!-- favicon -->
+<link rel="shortcut icon" type="image/png" href="@assets.withUrlPrefix(pageConfig.context).path("assets/images/favicon.png")">
+    <!-- IE with compatibility mode -->
+<meta http-equiv="x-ua-compatible" content="IE=edge">
+    <!-- Semantic-UI Styles-->
+    @Html(webJarsUtil.css("semantic.min.css"))
+    <!-- scala-adapters Styles -->
+@Html("<link rel=stylesheet type=text/css href=" + assets.withUrlPrefix(pageConfig.context).path("assets/stylesheets/main.css") + ">")

@@ -1,5 +1,6 @@
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
+import pme123.petstore.server.boundary.PetstoreAccessControl
 import pme123.petstore.server.boundary.services.NoAccessControl
 import pme123.petstore.server.control.services.{ClientActor, ClientParentActor}
 import pme123.petstore.shared.services.AccessControl
@@ -13,12 +14,10 @@ class Module extends AbstractModule with AkkaGuiceSupport {
 
     // you need to define the AccessControl
     bind(classOf[AccessControl])
-      .to(classOf[NoAccessControl])
+      .to(classOf[PetstoreAccessControl])
 
     bindActor[ClientParentActor]("clientParentActor")
     bindActorFactory[ClientActor, ClientActor.Factory]
-
-
 
   }
 }

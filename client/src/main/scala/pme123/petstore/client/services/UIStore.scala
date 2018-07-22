@@ -1,7 +1,7 @@
 package pme123.petstore.client.services
 
 import com.thoughtworks.binding.Binding.Var
-import pme123.petstore.shared.services.Logging
+import pme123.petstore.shared.services.{Logging, User}
 
 import scala.language.implicitConversions
 
@@ -15,8 +15,15 @@ object UIStore extends Logging {
     webContext
   }
 
+  def changeLoggedInUser(loggedInUser: User): User = {
+    info(s"UIStore: changeLoggedInUser $loggedInUser")
+    uiState.loggedInUser.value = Some(loggedInUser)
+    loggedInUser
+  }
+
   case class UIState(
-                      webContext: Var[String] = Var("")
+                      loggedInUser: Var[Option[User]] = Var(None),
+                        webContext: Var[String] = Var("")
                     )
 
 

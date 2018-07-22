@@ -10,9 +10,11 @@ trait AccessControl {
     * - is the 'importer' user
     * - is a user with the 'admin' role
     *
-    * @param user username
+    * @param username username
     * @param pwd  plain password
     * @return valid logged user for importing
     */
-  def isValidUser(user: String, pwd: String): Boolean
+  def isValidUser(username: String, pwd: String): Boolean
+
+  def getUser(username: String): AuthUser
 }
