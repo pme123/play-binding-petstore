@@ -1,15 +1,11 @@
 package pme123.petstore.shared
 
-import enumeratum.{Enum, EnumEntry}
 import julienrf.json.derived
 import play.api.libs.json.OFormat
 
-import scala.collection.immutable
-
-
 case class PetCategories(
-                        categories: List[PetCategory] = Nil
-                      ) {
+                          categories: List[PetCategory] = Nil
+                        ) {
 
 }
 
@@ -18,39 +14,16 @@ object PetCategories {
 
 }
 
-sealed trait PetCategory extends EnumEntry {
+case class PetCategory(ident: String, name: String, subTitle: String)
+  extends Identifiable {
 
-  def subTitle: String
+  def styleName: String = ident
 
-  def styleName:String = entryName.toLowerCase
-  def identPrefix:String = entryName.take(3).toUpperCase
+  def identPrefix: String = ident.take(3).toUpperCase
 }
 
-// see https://github.com/lloydmeta/enumeratum#usage
-object PetCategory
-  extends Enum[PetCategory] {
+object PetCategory {
 
-  val values: immutable.IndexedSeq[PetCategory] = findValues
-
-  case object Fish extends PetCategory {
-    def subTitle: String = "Saltwater, Freshwater"
-  }
-
-  case object Dogs extends PetCategory {
-    def subTitle: String = "Various Breeds"
-  }
-
-  case object Mice extends PetCategory {
-    def subTitle: String = "Various Breeds, Exotic Varieties"
-  }
-
-  case object Cats extends PetCategory {
-    def subTitle: String = "Various Breeds"
-  }
-
-  case object Birds extends PetCategory {
-    def subTitle: String = "Exotic Varieties"
-  }
 
   implicit val jsonFormat: OFormat[PetCategory] = derived.oformat[PetCategory]()
 }

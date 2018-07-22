@@ -3,26 +3,51 @@ package pme123.petstore.client
 import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
+import pme123.petstore.client.services.ClientUtils
 import pme123.petstore.shared.{PetCategory, PetProduct}
 
 import scala.util.matching.Regex
 
-private[client] case class PetCategoryView(categoryName: String)
-  extends MainView {
+trait CategoryView
+  extends ClientUtils {
+  def categoryName: String
 
-  PetUIStore.changePetCategory(categoryName)
+  @dom
+  def create(): Binding[HTMLElement] = {
+    val categories = PetUIStore.uiState.petCategories.bind
+    if (categories.nonEmpty) {
+      PetUIStore.changePetCategory(categoryName)
+      <div>
+        {createView().bind}
+      </div>
+    } else <div>
+      {loadingElem.bind}
+    </div>
+
+  }
+
+  protected def createView(): Binding[HTMLElement]
+}
+
+private[client] case class PetCategoryView(categoryName: String)
+  extends MainView
+    with CategoryView {
 
   val link: String = s"${PetCategoryView.name}/$categoryName"
 
   // 1. level of abstraction
   // **************************
   @dom
-  def create(): Binding[HTMLElement] = {
-    val cat = PetUIStore.uiState.petCategory.bind
+  protected def createView(): Binding[HTMLElement] = {
+
+    val maybeCat = PetUIStore.uiState.petCategory.bind
     <div class="">
-      {categoryHeader(cat).bind}{//
-      categoryDescr(cat).bind}{//
-      categoryTable(cat).bind}
+      {Constants(maybeCat.toSeq.flatMap { cat =>
+      Seq(categoryHeader(cat),
+        categoryDescr(cat),
+        categoryTable(cat)
+      )
+    }: _*).map(_.bind)}
     </div>
   }
 
@@ -31,8 +56,9 @@ private[client] case class PetCategoryView(categoryName: String)
 
   @dom
   private def categoryHeader(petCategory: PetCategory) = <h1 class="header">
-    <i class={s"category ${petCategory.styleName} big icon"}></i> &nbsp; &nbsp;{petCategory.entryName}
-
+    <i class={s"category ${
+      petCategory.styleName
+    } big icon"}></i> &nbsp; &nbsp;{petCategory.ident}
   </h1>
 
   @dom
@@ -62,7 +88,7 @@ private[client] case class PetCategoryView(categoryName: String)
           </tr>
         </thead>
         <tbody>
-          {for (pp <- PetUIStore.uiState.petProductsFor(petCategory)) yield productRow(pp).bind}
+          {for (pp <- PetUIStore.uiState.petProductsFor(petCategory.ident)) yield productRow(pp).bind}
         </tbody>
       </table>
     </div>
@@ -72,10 +98,16 @@ private[client] case class PetCategoryView(categoryName: String)
   private def productRow(petProduct: PetProduct) =
     <tr>
       <td class="five wide">
-        {petProduct.name}
+        <a href={s"#product/${
+          petProduct.category.ident
+        }/${
+          petProduct.productIdent
+        }"}>
+          {petProduct.name}
+        </a>
       </td>
       <td class="three wide">
-        {petProduct.category.entryName}
+        {petProduct.category.ident}
       </td>
       <td class="five wide">
         {Constants(petProduct.tags.map(tagLink).toList: _*).map(_.bind)}
@@ -90,9 +122,9 @@ private[client] case class PetCategoryView(categoryName: String)
   private def editButton(petProduct: PetProduct) = {
     <button class="ui basic icon button"
             onclick={_: Event =>
-              info("Edit is not implemented")}
-            data:data-tooltip={s"Edit ${petProduct.name}"}
-            data:data-position="bottom right">
+              info("Edit is not implemented")} data:data-tooltip={s"Edit ${
+      petProduct.name
+    }"} data:data-position="bottom right">
       <i class="edit outline icon"></i>
     </button>
   }
@@ -101,9 +133,9 @@ private[client] case class PetCategoryView(categoryName: String)
   private def showDetailButton(petProduct: PetProduct) = {
     <button class="ui basic icon button"
             onclick={_: Event =>
-              info("Show Details is not implemented")}
-            data:data-tooltip={s"Show ${petProduct.name}"}
-            data:data-position="bottom right">
+              info("Show Details is not implemented")} data:data-tooltip={s"Show ${
+      petProduct.name
+    }"} data:data-position="bottom right">
       <i class="external alternate icon"></i>
     </button>
   }

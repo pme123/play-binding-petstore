@@ -10,6 +10,7 @@ GET        /                                    pme123.petstore.server.boundary.
 # API to get all the Jobs that are provided
 GET        /api/petTags                         pme123.petstore.server.boundary.PetstoreApi.petTags()
 GET        /api/productTags                     pme123.petstore.server.boundary.PetstoreApi.productTags()
+GET        /api/petCategories                   pme123.petstore.server.boundary.PetstoreApi.petCategories()
 GET        /api/petProducts/:petCategory        pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
 GET        /api/pets/:productIdent              pme123.petstore.server.boundary.PetstoreApi.pets(productIdent: String)
 PUT        /api/filter                          pme123.petstore.server.boundary.PetstoreApi.filter()

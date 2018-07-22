@@ -5,8 +5,9 @@ import pme123.petstore.shared.services.UnitTest
 
 class PetTest extends UnitTest {
 
-  val petProduct1 = PetProduct("CA-123", "Manx", PetCategory.Cats)
-  val petProduct2 = PetProduct("CA-124", "Persian", PetCategory.Cats)
+  private val category = PetCategory("cats", "Cats", "Various Breeds")
+  val petProduct1 = PetProduct("CA-123", "Manx", category)
+  val petProduct2 = PetProduct("CA-124", "Persian", category)
 
 
   val pet = Pet("CA-123", "A nice Supercat", 12.5, petProduct1)

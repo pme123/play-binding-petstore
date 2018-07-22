@@ -49,7 +49,7 @@ private[client] trait PetTable
         {pet.descr}
       </td>
       <td class="three wide">
-        <a href={s"#product/${pet.product.category.entryName}/${pet.product.productIdent}"}>{pet.product.name}</a>
+        <a href={s"#product/${pet.product.category.ident}/${pet.product.productIdent}"}>{pet.product.name}</a>
       </td>
       <td class="two wide right">
         {f"${pet.price}%.2f"}

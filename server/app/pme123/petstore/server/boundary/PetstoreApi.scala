@@ -4,7 +4,7 @@ import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
 import pme123.petstore.server.control.PetRepo
-import pme123.petstore.shared.{Pet, PetCategory, PetFilter}
+import pme123.petstore.shared.{Pet, PetFilter}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,8 +32,15 @@ class PetstoreApi @Inject()(petRepo: PetRepo,
       )
   }
 
+  def petCategories(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+    petRepo.petCategories()
+      .map(products =>
+        Ok(Json.toJson(products)).as(JSON)
+      )
+  }
+
   def petProducts(petCategory: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
-    petRepo.petProducts(PetCategory.withNameInsensitive(petCategory))
+    petRepo.petProducts(petRepo.petCategory(petCategory))
       .map(products =>
         Ok(Json.toJson(products)).as(JSON)
       )

@@ -12,7 +12,7 @@ import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.util.{Failure, Success}
 
 trait HttpServices
-  extends Logging {
+  extends ClientUtils {
 
   def httpGet[A](apiPath: String
                  , storeChange: A => Unit)
@@ -20,21 +20,21 @@ trait HttpServices
     callService[A](apiPath, Ajax.get(apiPath), storeChange)
 
   def httpPut[A, B](apiPath: String
-                , body: B
-                 , storeChange: A => Unit)
-                (implicit reads: Reads[A], writes: Writes[B]): Binding[HTMLElement] =
+                    , body: B
+                    , storeChange: A => Unit)
+                   (implicit reads: Reads[A], writes: Writes[B]): Binding[HTMLElement] =
     callService[A](apiPath, Ajax.put(apiPath, InputData.str2ajax(Json.toJson(body).toString())), storeChange)
 
   @dom
   def callService[A](apiPath: String
-                      , ajaxCall: Future[XMLHttpRequest]
-                      , storeChange: A => Unit)
-                     (implicit reads: Reads[A]): Binding[HTMLElement] = {
+                     , ajaxCall: Future[XMLHttpRequest]
+                     , storeChange: A => Unit)
+                    (implicit reads: Reads[A]): Binding[HTMLElement] = {
     FutureBinding(ajaxCall)
       .bind match {
       case None =>
-        <div class="ui active inverted dimmer front">
-          <div class="ui large text loader">Loading</div>
+        <div>
+          {loadingElem.bind}
         </div>
       case Some(Success(response)) =>
         val json: JsValue = Json.parse(response.responseText)

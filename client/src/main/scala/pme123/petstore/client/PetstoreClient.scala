@@ -1,6 +1,6 @@
 package pme123.petstore.client
 
-import com.thoughtworks.binding.Binding.{Constants, Var}
+import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLElement
@@ -62,7 +62,7 @@ object PetstoreClient
   @dom
   private lazy val initCategories: Binding[HTMLElement] = {
     <div>
-      {Constants(PetCategory.values.map(initProducts): _*).map(_.bind)}
+      {for (category <- PetUIStore.uiState.petCategories) yield initProducts(category).bind}
     </div>
   }
 

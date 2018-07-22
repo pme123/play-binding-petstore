@@ -1,6 +1,5 @@
 package pme123.petstore.client
 
-import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
 import org.scalajs.jquery.jQuery
@@ -32,8 +31,8 @@ private[client] object PetMenu
   @dom
   private lazy val categoryTable = {
     <div class="ui fluid popup bottom left transition hidden">
-      <div class={s"ui ${SemanticUI.columnWide(PetCategory.values.length)} column relaxed divided grid"}>
-        {Constants(PetCategory.values.map(menuItem): _*).map(_.bind)}
+      <div class={s"ui ${SemanticUI.columnWide(PetUIStore.uiState.petCategories.bind.length)} column relaxed divided grid"}>
+        {for (category <- PetUIStore.uiState.petCategories) yield menuItem(category).bind}
       </div>
     </div>
   }
@@ -44,16 +43,16 @@ private[client] object PetMenu
     val cat = PetUIStore.uiState.petCategory.bind
     <div class="column menuLinks">
       <div class="vertical borderless menu">
-        <div class={s"item ${activeStyle(cat == petCategory)}"}>
+        <div class={s"item ${activeStyle(cat.contains(petCategory))}"}>
           <h4>
             <a
-            href={s"#${PetCategoryView.name}/${petCategory.entryName}"}
+            href={s"#${PetCategoryView.name}/${petCategory.ident}"}
             onclick={_: Event =>
               PetUIStore.changePetCategory(petCategory)
               PetUIStore.clearPetProduct()
               hidePopup}>
               <i class={s"category ${petCategory.styleName} big left icon"}></i>{//
-              petCategory.entryName}
+              petCategory.ident}
             </a>
           </h4>
         </div>{for(product <- PetUIStore.uiState.petProductsFor(petCategory)) yield productLink(product).bind}
@@ -71,7 +70,7 @@ private[client] object PetMenu
          PetUIStore.changePetProduct(petProduct)
          PetUIStore.changePetCategory(petProduct.category)
          hidePopup}
-       href={s"#${PetProductView.name}/${petProduct.category.entryName}/${petProduct.productIdent}"}>
+       href={s"#${PetProductView.name}/${petProduct.category.ident}/${petProduct.productIdent}"}>
       {petProduct.name}
     </a>
   }

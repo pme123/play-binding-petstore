@@ -3,7 +3,6 @@ package pme123.petstore.client
 import com.thoughtworks.binding.Route
 import org.scalajs.dom.window
 import pme123.petstore.client.PetstoreClient.info
-import pme123.petstore.shared.PetCategory
 
 object UIRoute {
 
@@ -19,11 +18,11 @@ object UIRoute {
       info(s"PetCategoryView: $id")
       PetCategoryView(id)
     case _ =>
-      info(s"PetCategoryView!!: $hashText")
-      PetCategoryView(PetCategory.Dogs.entryName)
+      info(s"PetFilterView!!: $hashText")
+      PetFilterView
   }
 
-  def changeRoute(view: MainView) = {
+  def changeRoute(view: MainView) {
     if(route.state.value != view)
       route.state.value = view
   }

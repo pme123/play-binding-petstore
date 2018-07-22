@@ -2,32 +2,37 @@ package pme123.petstore.client
 
 import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.raw.{Event, HTMLElement}
-import pme123.petstore.shared.{Pet, PetProduct}
+import org.scalajs.dom.raw.HTMLElement
+import pme123.petstore.shared.PetProduct
 
 import scala.util.matching.Regex
 
 private[client] case class PetProductView(categoryName: String, productIdent: String)
-  extends PetTable {
-
-  private val petCategory = PetUIStore.changePetCategory(categoryName)
+  extends PetTable
+    with CategoryView {
 
   val link: String = s"${PetProductView.name}/$categoryName/$productIdent"
 
   // 1. level of abstraction
   // **************************
   @dom
-  def create(): Binding[HTMLElement] = {
+  protected def createView(): Binding[HTMLElement] = {
     // make sure products are initialized
-    PetUIStore.uiState.petProductsFor(petCategory).bind
-    PetUIStore.changePetProduct(productIdent)
-    val maybeProd = PetUIStore.uiState.petProduct.bind
-    <div class="">
-      {Constants(maybeProd.toSeq.flatMap { prod =>
-      Seq(ServerServices.pets(prod)
-      ,createAll(prod))
-    }.toSeq: _*).map(_.bind)}
+    val products = PetUIStore.uiState.petProductsFor(categoryName).bind
+    if (products.nonEmpty) {
+      val maybeProd2 = PetUIStore.changePetProduct(productIdent)
+      val maybeProd = PetUIStore.uiState.petProduct.bind
+      info(s"MAYBE PROD: $maybeProd + $maybeProd2")
+      <div class="">
+        {Constants(maybeProd.toSeq.flatMap { prod =>
+        Seq(ServerServices.pets(prod)
+          , createAll(prod))
+      }: _*).map(_.bind)}
+      </div>
+    } else <div>
+      {loadingElem.bind}
     </div>
+
   }
 
 

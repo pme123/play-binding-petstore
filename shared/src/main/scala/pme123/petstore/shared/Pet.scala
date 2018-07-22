@@ -7,9 +7,9 @@ import play.api.libs.json.OFormat
 import scala.collection.immutable
 
 case class Pets(
-               petProduct: PetProduct,
-                pets: List[Pet] = Nil
-              )
+                 petProduct: PetProduct,
+                 pets: List[Pet] = Nil
+               )
 
 object Pets {
   implicit val jsonFormat: OFormat[Pets] = derived.oformat[Pets]()
@@ -23,9 +23,12 @@ case class Pet(
                 product: PetProduct,
                 status: PetStatus = PetStatus.Available,
                 tags: Set[String] = Set.empty,
-                photoUrls: Set[String] = Set.empty,
-                id: Option[Long] = None
+                photoUrls: Set[String] = Set.empty
               )
+  extends Identifiable {
+
+  val ident: String = itemIdent
+}
 
 object Pet {
   implicit val jsonFormat: OFormat[Pet] = derived.oformat[Pet]()

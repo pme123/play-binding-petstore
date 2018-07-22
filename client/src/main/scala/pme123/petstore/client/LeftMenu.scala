@@ -63,7 +63,8 @@ private[client] object LeftMenu
     </div>
 
   @dom
-  private lazy val categorySelect =
+  private lazy val categorySelect = {
+    ServerServices.petCategories().bind
     <div class="item">
       <div class="ui multiple dropdown">
         <input type="hidden" id="categoriesFilter"
@@ -72,15 +73,16 @@ private[client] object LeftMenu
         <i class="filter icon"></i>
         <span class="text">Pet Categories</span>
         <div class="menu">
-          {Constants(PetCategory.values.map(categoryItem): _*).map(_.bind)}
+          {for (category <- PetUIStore.uiState.petCategories) yield categoryItem(category).bind}
         </div>
       </div>
     </div>
+  }
 
   @dom
   private def categoryItem(petCategory: PetCategory): Binding[HTMLElement] = {
-    <div class="item" data:data-value={petCategory.entryName}>
-      <i class={s"category ${petCategory.styleName} big left icon"}></i>{petCategory.entryName}
+    <div class="item" data:data-value={petCategory.ident}>
+      <i class={s"category ${petCategory.styleName} big left icon"}></i>{petCategory.ident}
     </div>
   }
 

@@ -59,6 +59,12 @@ trait ClientUtils
     </td>
 
   @dom
+  def loadingElem: Binding[HTMLElement] =
+    <div class="ui active inverted dimmer front">
+      <div class="ui large text loader">Loading</div>
+    </div>
+
+  @dom
   def tagLink(tag: String): Binding[HTMLElement] =
     <div class="ui tag label">
       {tag}

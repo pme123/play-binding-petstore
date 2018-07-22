@@ -16,3 +16,5 @@ case class ServiceException(msg: String, override val cause: Option[Throwable] =
 case class ConfigException(msg: String, override val cause: Option[Throwable] = None)
   extends SPAException
 
+
+

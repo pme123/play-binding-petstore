@@ -10,21 +10,19 @@ object PetUIStore extends Logging {
 
   val uiState = UIState()
 
-  def changePetCategory(id: String): PetCategory = {
-    info(s"UIStore: changePetCategory $id")
-    uiState.petCategory.value = PetCategory.withNameInsensitive(id)
-    uiState.petCategory.value
-  }
+  def changePetCategory(ident: String): PetCategory =
+    changePetCategory(uiState.petCategoryFor(ident))
 
   def changePetCategory(petCategory: PetCategory): PetCategory = {
     info(s"UIStore: changePetCategory $petCategory")
-    uiState.petCategory.value = petCategory
+    uiState.petCategory.value = Some(petCategory)
     petCategory
   }
 
   def changePetProduct(productIdent: String): Option[PetProduct] = {
-    info(s"UIStore: changePetProduct $productIdent")
-    val maybeProduct = uiState.petProductsFor(uiState.petCategory.value).value
+    info(s"UIStore: changePetProduct $productIdent - ${uiState.petCategory.value} - ${uiState.petProductsFor("mice").value}")
+    val maybeProduct = uiState.petCategory.value.toSeq
+      .flatMap(cat => uiState.petProductsFor(cat.ident).value)
       .find(_.productIdent == productIdent)
     uiState.petProduct.value = maybeProduct
     maybeProduct
@@ -41,9 +39,16 @@ object PetUIStore extends Logging {
     uiState.petProduct.value = None
   }
 
+  def changePetCategories(petCategories: PetCategories): PetCategories = {
+    info(s"UIStore: changePetCategories $petCategories")
+    uiState.petCategories.value.clear()
+    uiState.petCategories.value ++= petCategories.categories
+    petCategories
+  }
+
   def changeAllPetProducts(petProducts: PetProducts): PetProducts = {
     info(s"UIStore: changeAllPetProducts $petProducts")
-    val prods: Vars[PetProduct] = uiState.allPetProducts.value(petProducts.category)
+    val prods: Vars[PetProduct] = uiState.petProductsFor(petProducts.category.ident)
     prods.value.clear()
     prods.value ++= petProducts.products
     petProducts
@@ -74,30 +79,32 @@ object PetUIStore extends Logging {
     tags
   }
 
-  // make sure all are closed
-  private def hideAllDialogs(): Unit = {
-
-  }
-
-
-  case class UIState(
-                      petCategory: Var[PetCategory] = Var(PetCategory.Dogs),
-                      petProduct: Var[Option[PetProduct]] = Var(None),
-                      allPetProducts: Var[Map[PetCategory, Vars[PetProduct]]] = UIState.initAllPetProducts(),
-                      petTags: Vars[String] = Vars(),
-                      productTags: Vars[String] = Vars(),
-                      pets: Vars[Pet] = Vars()
+  case class UIState(petCategory: Var[Option[PetCategory]] = Var(None),
+                     petProduct: Var[Option[PetProduct]] = Var(None),
+                     petTags: Vars[String] = Vars(),
+                     productTags: Vars[String] = Vars(),
+                     petCategories: Vars[PetCategory] = Vars(),
+                     pets: Vars[Pet] = Vars()
                     ) {
 
+
+    private lazy val allPetProducts: Var[Map[String, Vars[PetProduct]]] = Var(Map())
+
     def petProductsFor(petCategory: PetCategory): Vars[PetProduct] =
-      allPetProducts.value(petCategory)
+      petProductsFor(petCategory.ident)
 
-  }
-
-  object UIState {
-    def initAllPetProducts(): Var[Map[PetCategory, Vars[PetProduct]]] = {
-      Var(PetCategory.values.map(_ -> Vars.empty[PetProduct]).toMap)
+    def petProductsFor(categoryIdent: String): Vars[PetProduct] = {
+      allPetProducts.value.getOrElse(categoryIdent, {
+        val petProducts = Vars.empty[PetProduct]
+        allPetProducts.value = allPetProducts.value.updated(categoryIdent, petProducts)
+        petProducts
+      })
     }
+
+    def petCategoryFor(ident: String): PetCategory =
+      petCategories.value.find(_.ident == ident)
+        .get
+
   }
 
 }

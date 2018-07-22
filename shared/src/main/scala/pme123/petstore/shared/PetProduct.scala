@@ -19,10 +19,14 @@ object PetProducts {
 case class PetProduct(
                        productIdent: String,
                        name: String,
-                       category: PetCategory = PetCategory.Dogs,
+                       category: PetCategory,
                        tags: Set[String] = Set.empty
-                     ) {
-  def identPrefix:String = name.take(3).toUpperCase
+                     )
+  extends Identifiable {
+
+  val ident: String = productIdent
+
+  def identPrefix: String = name.take(3).toUpperCase
 
 }
 
