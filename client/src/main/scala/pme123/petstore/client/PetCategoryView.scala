@@ -15,6 +15,7 @@ trait CategoryView
   @dom
   def create(): Binding[HTMLElement] = {
     val categories = PetUIStore.uiState.petCategories.bind
+    // make sure categories are initialized
     if (categories.nonEmpty) {
       PetUIStore.changePetCategory(categoryName)
       <div>

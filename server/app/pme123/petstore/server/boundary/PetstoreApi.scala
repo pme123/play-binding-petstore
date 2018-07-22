@@ -53,6 +53,13 @@ class PetstoreApi @Inject()(petRepo: PetRepo,
       )
   }
 
+  def pet(petIdent: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+    petRepo.pet(petIdent)
+      .map(pet =>
+        Ok(Json.toJson(pet)).as(JSON)
+      )
+  }
+
   def filter(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
     request.body.asText.map { body =>
       Json.parse(body).validate[PetFilter]

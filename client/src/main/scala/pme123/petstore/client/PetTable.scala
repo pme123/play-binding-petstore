@@ -43,13 +43,20 @@ private[client] trait PetTable
   }
 
   @dom
-  private def petRow(pet: Pet) =
+  private def petRow(pet: Pet) = {
+    val prodIdent = s"${pet.product.category.ident}/${pet.product.productIdent}"
+    val prodLink = s"#${PetProductView.name}/$prodIdent"
+    val petLink = s"#${PetView.name}/$prodIdent/${pet.itemIdent}"
     <tr>
       <td class="five wide">
-        {pet.descr}
+        <a href={petLink}>
+          {pet.descr}
+        </a>
       </td>
       <td class="three wide">
-        <a href={s"#product/${pet.product.category.ident}/${pet.product.productIdent}"}>{pet.product.name}</a>
+        <a href={prodLink}>
+          {pet.product.name}
+        </a>
       </td>
       <td class="two wide right">
         {f"${pet.price}%.2f"}
@@ -62,6 +69,7 @@ private[client] trait PetTable
         showDetailButton(pet).bind}
       </td>
     </tr>
+  }
 
   @dom
   private def editButton(pet: Pet) = {

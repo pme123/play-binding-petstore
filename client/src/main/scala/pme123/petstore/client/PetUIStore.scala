@@ -39,6 +39,12 @@ object PetUIStore extends Logging {
     uiState.petProduct.value = None
   }
 
+  def changePet(pet: Pet): Pet = {
+    info(s"UIStore: changePet $pet")
+    uiState.pet.value = Some(pet)
+    pet
+  }
+
   def changePetCategories(petCategories: PetCategories): PetCategories = {
     info(s"UIStore: changePetCategories $petCategories")
     uiState.petCategories.value.clear()
@@ -81,6 +87,7 @@ object PetUIStore extends Logging {
 
   case class UIState(petCategory: Var[Option[PetCategory]] = Var(None),
                      petProduct: Var[Option[PetProduct]] = Var(None),
+                     pet: Var[Option[Pet]] = Var(None),
                      petTags: Vars[String] = Vars(),
                      productTags: Vars[String] = Vars(),
                      petCategories: Vars[PetCategory] = Vars(),

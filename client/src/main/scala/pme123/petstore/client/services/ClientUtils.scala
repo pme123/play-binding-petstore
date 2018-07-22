@@ -43,7 +43,7 @@ trait ClientUtils
   @dom
   def faviconElem: Binding[HTMLElement] =
     <div class="ui item">
-      <img src={staticAsset("images/favicon.png")}></img>
+      <img src={staticAsset("images/favicon.png")}/>
     </div>
 
   @dom

@@ -46,14 +46,18 @@ class PetRepo @Inject()()
     }
   }
 
-  def filter(petFilter: PetFilter): Future[Seq[Pet]] = {
+  def pet(petIdent: String): Future[Pet] =
+    Future {
+      PetsRepo.pet(petIdent)
+    }
+
+  def filter(petFilter: PetFilter): Future[Seq[Pet]] =
     Future {
       if (petFilter.nonEmpty)
         PetsRepo.filter(petFilter)
       else
         Nil
     }
-  }
 }
 
 object PetsRepo {
@@ -74,6 +78,9 @@ object PetsRepo {
       .filter(p => filterTextSeq(petFilter.petTags, p.tags))
       .filter(p => filterTextSeq(petFilter.productTags, p.product.tags))
       .filter(p => petFilter.categories.isEmpty || petFilter.categories.contains(p.product.category.ident))
+
+  def pet(petIdent: String): Pet =
+    pets(petIdent)
 
   private def filterText(filter: Option[String], text: String): Boolean =
     filter.isEmpty || text.toLowerCase.contains(filter.get.toLowerCase())

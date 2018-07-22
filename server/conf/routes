@@ -13,6 +13,7 @@ GET        /api/productTags                     pme123.petstore.server.boundary.
 GET        /api/petCategories                   pme123.petstore.server.boundary.PetstoreApi.petCategories()
 GET        /api/petProducts/:petCategory        pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
 GET        /api/pets/:productIdent              pme123.petstore.server.boundary.PetstoreApi.pets(productIdent: String)
+GET        /api/pet/:petIdent                   pme123.petstore.server.boundary.PetstoreApi.pet(petIdent: String)
 PUT        /api/filter                          pme123.petstore.server.boundary.PetstoreApi.filter()
 # API to get all the Client Configs that are registered for a jobConfig
 #GET        /api/petProducts/:jobIdent                      pme123.petstore.server.boundary.PetstoreController.clientConfigs()

@@ -20,9 +20,8 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
     // make sure products are initialized
     val products = PetUIStore.uiState.petProductsFor(categoryName).bind
     if (products.nonEmpty) {
-      val maybeProd2 = PetUIStore.changePetProduct(productIdent)
+      PetUIStore.changePetProduct(productIdent)
       val maybeProd = PetUIStore.uiState.petProduct.bind
-      info(s"MAYBE PROD: $maybeProd + $maybeProd2")
       <div class="">
         {Constants(maybeProd.toSeq.flatMap { prod =>
         Seq(ServerServices.pets(prod)

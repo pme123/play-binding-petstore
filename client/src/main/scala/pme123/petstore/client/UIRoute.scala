@@ -11,6 +11,9 @@ object UIRoute {
     case PetFilterView.hashRegex() =>
       info(s"PetFilterView")
       PetFilterView
+    case PetView.hashRegex(idCat, idProd, id) =>
+      info(s"PetView: $idCat $idProd $id")
+      PetView(idCat, idProd, id)
     case PetProductView.hashRegex(idCat, id) =>
       info(s"PetProductView: $idCat $id")
       PetProductView(idCat, id)
@@ -23,7 +26,7 @@ object UIRoute {
   }
 
   def changeRoute(view: MainView) {
-    if(route.state.value != view)
+    if (route.state.value != view)
       route.state.value = view
   }
 

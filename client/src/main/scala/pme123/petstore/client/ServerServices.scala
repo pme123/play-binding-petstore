@@ -30,6 +30,12 @@ object ServerServices
     httpGet(apiPath, (results: Pets) => PetUIStore.changePets(results))
   }
 
+  def pet(petIdent: String): Binding[HTMLElement] = {
+    val apiPath = s"${UIStore.uiState.webContext.value}/api/pet/$petIdent"
+
+    httpGet(apiPath, (result: Pet) => PetUIStore.changePet(result))
+  }
+
   def petTags(): Binding[HTMLElement] = {
     val apiPath = s"${UIStore.uiState.webContext.value}/api/petTags"
 
