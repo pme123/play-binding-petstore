@@ -23,7 +23,11 @@ private[client] object PetFilterView
       {//
       filterHeader.bind}{//
       filterDescr.bind}{//
-      petTable.bind}
+      if(PetUIStore.uiState.pets.bind.isEmpty){
+        <div class="content">
+          <h3>No pets match your Filter.</h3>
+        </div>
+      } else petTable.bind}
     </div>
   }
 

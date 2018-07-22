@@ -31,7 +31,6 @@ private[client] trait PetTable
               Tags
             </th>
             <th>
-              Actions
             </th>
           </tr>
         </thead>
@@ -44,19 +43,12 @@ private[client] trait PetTable
 
   @dom
   private def petRow(pet: Pet) = {
-    val prodIdent = s"${pet.product.category.ident}/${pet.product.productIdent}"
-    val prodLink = s"#${PetProductView.name}/$prodIdent"
-    val petLink = s"#${PetView.name}/$prodIdent/${pet.itemIdent}"
     <tr>
       <td class="five wide">
-        <a href={petLink}>
-          {pet.descr}
-        </a>
+        {petLink(pet).bind}
       </td>
       <td class="three wide">
-        <a href={prodLink}>
-          {pet.product.name}
-        </a>
+        {productLink(pet.product).bind}
       </td>
       <td class="two wide right">
         {f"${pet.price}%.2f"}
@@ -66,7 +58,7 @@ private[client] trait PetTable
       </td>
       <td class="two wide">
         {editButton(pet).bind}{//
-        showDetailButton(pet).bind}
+        addToCardButton(pet).bind}
       </td>
     </tr>
   }
@@ -83,13 +75,13 @@ private[client] trait PetTable
   }
 
   @dom
-  private def showDetailButton(pet: Pet) = {
+  private def addToCardButton(pet: Pet) = {
     <button class="ui basic icon button"
             onclick={_: Event =>
-              info("Show Details is not implemented")}
-            data:data-tooltip={s"Show ${pet.itemIdent}"}
+              info("Add to Card is not implemented")}
+            data:data-tooltip={s"Add ${pet.descr} to the Shopping Card"}
             data:data-position="bottom right">
-      <i class="external alternate icon"></i>
+      <i class="shopping cart icon"></i>
     </button>
   }
 

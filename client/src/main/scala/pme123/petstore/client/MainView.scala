@@ -1,8 +1,9 @@
 package pme123.petstore.client
 
-import com.thoughtworks.binding.Binding
+import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.HTMLElement
 import pme123.petstore.client.services.ClientUtils
+import pme123.petstore.shared.{Pet, PetCategory, PetProduct}
 
 trait MainView
   extends ClientUtils {
@@ -10,6 +11,32 @@ trait MainView
   def link: String
 
   def create(): Binding[HTMLElement]
+
+  @dom
+  def categoryLink(petCategory: PetCategory): Binding[HTMLElement] = {
+    val catLink = s"#${PetCategoryView.name}/${petCategory.ident}"
+    <a href={catLink}>
+      {petCategory.name}
+    </a>
+  }
+
+  @dom
+  def productLink(petProduct: PetProduct): Binding[HTMLElement] = {
+    val prodIdent = s"${petProduct.category.ident}/${petProduct.productIdent}"
+    val prodLink = s"#${PetProductView.name}/$prodIdent"
+    <a href={prodLink}>
+      {petProduct.name}
+    </a>
+  }
+
+  @dom
+  def petLink(pet: Pet): Binding[HTMLElement] = {
+    val prodIdent = s"${pet.product.category.ident}/${pet.product.productIdent}"
+    val petLink = s"#${PetView.name}/$prodIdent/${pet.itemIdent}"
+    <a href={petLink}>
+      {pet.descr}
+    </a>
+  }
 
 }
 

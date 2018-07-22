@@ -42,7 +42,11 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
     <div class="">
       {productHeader(petProduct).bind}{//
       productDescr(petProduct).bind}{//
-      petTable.bind}
+      if(PetUIStore.uiState.pets.bind.isEmpty){
+        <div class="content">
+          <h3><i class="thumbs down outline big icon"/>Sorry at the moment there is nothing in stock.</h3>
+        </div>
+      } else petTable.bind}
     </div>
   }
 

@@ -8,7 +8,7 @@ import pme123.petstore.shared.Pet
 import scala.util.matching.Regex
 
 private[client] case class PetView(categoryName: String, productIdent: String, petIdent: String)
-  extends PetTable {
+  extends MainView {
 
   val link: String = s"${PetView.name}/$categoryName/$productIdent/$petIdent"
 
@@ -43,7 +43,9 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
       <div class="six wide column">
         {petHeader(pet).bind}{//
         petDescr(pet).bind}{//
-        petPrice(pet).bind}
+        petPrice(pet).bind}{//
+        addToCardButton(pet).bind}{//
+        petInfo(pet).bind}
       </div>
     </div>
   }
@@ -66,10 +68,36 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
     </h3>
 
   @dom
+  private def addToCardButton(pet: Pet) =
+    <button class="ui fluid button">
+      <i class="shopping cart icon large"></i>
+      Add to Shopping Card
+    </button>
+
+  @dom
+  private def petInfo(pet: Pet) = {
+    <table class="ui very basic table">
+      <tr>
+        <td>Category:
+          &nbsp;
+        </td> <td>
+        {categoryLink(pet.product.category).bind}
+      </td>
+      </tr>
+      <tr>
+        <td>Product:</td> <td>
+        {productLink(pet.product).bind}
+      </td>
+      </tr>
+
+    </table>
+  }
+
+  @dom
   private def imagePanel(pet: Pet) =
     <div>
       {//
-      Constants(pet.photoUrls.headOption.map(imageElem).toList: _*).map(_.bind)}
+      imageElem(pet.photoUrls.headOption.getOrElse("noimage.png")).bind}
     </div>
 
   @dom
