@@ -21,9 +21,8 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
       {ServerServices.pet(petIdent).bind}{//
       val maybePet = PetUIStore.uiState.pet.bind
       if (maybePet.nonEmpty) {
-        val pet = maybePet.get
         <div class="">
-          {createAll(pet).bind}
+          {createAll(maybePet.pet).bind}
         </div>
       } else <div>
         {loadingElem.bind}
@@ -64,7 +63,7 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
   @dom
   private def petPrice(pet: Pet) =
     <h3 class="red header">
-      {s"$$ ${pet.price}"}
+      {pet.priceAsStr}
     </h3>
 
   @dom
@@ -96,14 +95,7 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
   @dom
   private def imagePanel(pet: Pet) =
     <div>
-      {//
-      imageElem(pet.photoUrls.headOption.getOrElse("noimage.png")).bind}
-    </div>
-
-  @dom
-  private def imageElem(photoUrl: String) =
-    <div>
-      <img class="ui image" src={staticAsset(s"images/catalog/$photoUrl")}></img>
+      <img class="ui image" src={staticAsset(pet.firstPhotoUrl)}></img>
     </div>
 
 }

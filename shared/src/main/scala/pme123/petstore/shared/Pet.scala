@@ -27,7 +27,11 @@ case class Pet(
               )
   extends Identifiable {
 
+  val firstPhotoUrl: String = s"images/catalog/${photoUrls.headOption.getOrElse("noimage.png")}"
+
   val ident: String = itemIdent
+
+  val priceAsStr = f"$$ $price%.2f"
 }
 
 object Pet {

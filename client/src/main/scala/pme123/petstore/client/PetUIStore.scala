@@ -39,10 +39,10 @@ object PetUIStore extends Logging {
     uiState.petProduct.value = None
   }
 
-  def changePet(pet: Pet): Pet = {
+  def changePet(pet: Pet): UIPet = {
     info(s"UIStore: changePet $pet")
-    uiState.pet.value = Some(pet)
-    pet
+    uiState.pet.value = UIPet(Some(pet))
+    uiState.pet.value
   }
 
   def changePetCategories(petCategories: PetCategories): PetCategories = {
@@ -87,7 +87,7 @@ object PetUIStore extends Logging {
 
   case class UIState(petCategory: Var[Option[PetCategory]] = Var(None),
                      petProduct: Var[Option[PetProduct]] = Var(None),
-                     pet: Var[Option[Pet]] = Var(None),
+                     pet: Var[UIPet] = Var(UIPet()),
                      petTags: Vars[String] = Vars(),
                      productTags: Vars[String] = Vars(),
                      petCategories: Vars[PetCategory] = Vars(),
@@ -114,4 +114,11 @@ object PetUIStore extends Logging {
 
   }
 
+}
+
+case class UIPet(maybePet: Option[Pet] = None) {
+
+
+  val nonEmpty: Boolean = maybePet.nonEmpty
+  lazy val pet: Pet = maybePet.get
 }

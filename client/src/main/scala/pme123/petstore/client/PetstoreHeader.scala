@@ -70,7 +70,7 @@ private[client] object PetstoreHeader
         <div class="ui floating dropdown icon basic button">
           <div class="ui mini circular image">
             <img src={staticAsset(user.avatar)}/>
-            </div>
+          </div>
           <span class="text">
             &nbsp;{user.fullName}
           </span>

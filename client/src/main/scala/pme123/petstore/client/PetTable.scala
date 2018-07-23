@@ -1,8 +1,8 @@
 package pme123.petstore.client
 
 import com.thoughtworks.binding.Binding.Constants
-import com.thoughtworks.binding.dom
-import org.scalajs.dom.raw.Event
+import com.thoughtworks.binding.{Binding, dom}
+import org.scalajs.dom.raw.{Event, HTMLElement}
 import pme123.petstore.client.services.UIStore
 import pme123.petstore.shared.Pet
 
@@ -16,25 +16,7 @@ private[client] trait PetTable
   @dom
   private[client] lazy val petTable = {
     <div class="content">
-      <table class="ui padded table">
-        <thead>
-          <tr>
-            <th>
-              Description
-            </th>
-            <th>
-              Pet Product
-            </th>
-            <th>
-              Price
-            </th>
-            <th>
-              Tags
-            </th>
-            <th>
-            </th>
-          </tr>
-        </thead>
+      <table class="ui very basic table">
         <tbody>
           {for (pets <- PetUIStore.uiState.pets) yield petRow(pets).bind}
         </tbody>
@@ -45,19 +27,19 @@ private[client] trait PetTable
   @dom
   private def petRow(pet: Pet) = {
     <tr>
-      <td class="five wide">
+      <td class="six wide">
         {petLink(pet).bind}
       </td>
       <td class="three wide">
         {productLink(pet.product).bind}
       </td>
       <td class="two wide right">
-        {f"${pet.price}%.2f"}
+        {pet.priceAsStr}
       </td>
       <td class="four wide">
         {Constants(pet.tags.map(tagLink).toList: _*).map(_.bind)}
       </td>
-      <td class="two wide">
+      <td class="one wide left">
         {editButton(pet).bind}{//
         addToCardButton(pet).bind}
       </td>
@@ -92,6 +74,17 @@ private[client] trait PetTable
     else <span></span>
   }
 
+  @dom
+  def petLink(pet: Pet): Binding[HTMLElement] = {
+    val prodIdent = s"${pet.product.category.ident}/${pet.product.productIdent}"
+    val petLink = s"#${PetView.name}/$prodIdent/${pet.itemIdent}"
+    <a href={petLink}>
+      <div class="ui mini circular image">
+        <img src={staticAsset(pet.firstPhotoUrl)}/>
+      </div>
+      &nbsp;&nbsp;{pet.descr}
+    </a>
+  }
 
 }
 
