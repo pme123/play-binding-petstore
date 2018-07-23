@@ -31,10 +31,8 @@ object PetstoreClient
     dom.render(document.body, render)
     setTimeout(200) {
       jQuery(".ui.dropdown").dropdown(js.Dynamic.literal(on = "hover"))
-      jQuery(".ui.button").popup(js.Dynamic.literal(inline = true))
       jQuery(".pets").popup(js.Dynamic.literal(on = "click"))
-      jQuery(".ui.item .ui.input").popup(js.Dynamic.literal(on = "hover"))
-
+      //jQuery(".ui.item .ui.input").popup(js.Dynamic.literal(on = "hover"))
     }
   }
 

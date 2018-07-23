@@ -73,7 +73,7 @@ class AuthController @Inject()(accessControl: AccessControl,
   def logout = Action {
     implicit request: Request[AnyContent] =>
       // docs: “withNewSession ‘discards the whole (old) session’”
-      Redirect(routes.AuthController.showLoginForm())
+      Redirect(routes.HomeController.index())
         .flashing("info" -> "Sie sind ausgeloggt.")
         .withNewSession
   }

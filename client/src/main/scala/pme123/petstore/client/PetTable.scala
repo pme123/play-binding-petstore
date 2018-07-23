@@ -3,6 +3,7 @@ package pme123.petstore.client
 import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.dom
 import org.scalajs.dom.raw.Event
+import pme123.petstore.client.services.UIStore
 import pme123.petstore.shared.Pet
 
 private[client] trait PetTable
@@ -65,24 +66,30 @@ private[client] trait PetTable
 
   @dom
   private def editButton(pet: Pet) = {
-    <button class="ui basic icon button"
-            onclick={_: Event =>
-              info("Edit is not implemented")}
-            data:data-tooltip={s"Edit ${pet.itemIdent}"}
-            data:data-position="bottom right">
-      <i class="edit outline icon"></i>
-    </button>
+    val user = UIStore.uiState.loggedInUser.bind
+    if (user.isDefined && user.get.authUser.isManager)
+      <button class="ui basic icon button"
+              onclick={_: Event =>
+                info("Edit is not implemented")}
+              data:data-tooltip={s"Edit ${pet.descr}"}
+              data:data-position="bottom right">
+        <i class="edit outline icon"></i>
+      </button>
+    else <span></span>
   }
 
   @dom
   private def addToCardButton(pet: Pet) = {
-    <button class="ui basic icon button"
-            onclick={_: Event =>
-              info("Add to Card is not implemented")}
-            data:data-tooltip={s"Add ${pet.descr} to the Shopping Card"}
-            data:data-position="bottom right">
-      <i class="shopping cart icon"></i>
-    </button>
+    val user = UIStore.uiState.loggedInUser.bind
+    if (user.isEmpty || user.get.authUser.isCustomer)
+      <button class="ui basic icon button"
+              onclick={_: Event =>
+                info("Add to Card is not implemented")}
+              data:data-tooltip={s"Add ${pet.descr} to the Shopping Card"}
+              data:data-position="bottom right">
+        <i class="shopping cart icon"></i>
+      </button>
+    else <span></span>
   }
 
 

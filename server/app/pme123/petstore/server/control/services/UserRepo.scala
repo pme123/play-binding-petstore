@@ -12,7 +12,7 @@ object UserRepo {
   private val demoAdmin = "demoAdmin"
 
   val authUsers = Map(
-    demoCustomer -> AuthUser(demoCustomer),
+    demoCustomer -> AuthUser(demoCustomer, Seq(customerGroup)),
     demoManager -> AuthUser(demoManager, Seq(managerGroup)),
     demoAdmin -> AuthUser(demoAdmin, Seq(adminGroup))
   )

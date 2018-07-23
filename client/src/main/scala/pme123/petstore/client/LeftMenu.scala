@@ -41,24 +41,32 @@ private[client] object LeftMenu
   @dom
   private lazy val petDescrInput =
     <div class="item">
-      <div class="ui input">
+      <div class="ui action input">
         <input id="petDescrFilter"
                type="text"
                placeholder="Pet Description..."
                onkeyup={_: Event =>
                  UIFilter.changePetDescr(petDescrFilter.value)}/>
+        <button class="ui icon button"
+        onclick={_: Event =>
+          UIFilter.changePetDescr("")
+          petDescrFilter.value = ""}><i class="window close icon"></i></button>
       </div>
     </div>
 
   @dom
   private lazy val productInput =
     <div class="item">
-      <div class="ui input">
+      <div class="ui action input">
         <input id="productFilter"
                type="text"
                placeholder="Product..."
                onkeyup={_: Event =>
                  UIFilter.changeProduct(productFilter.value)}/>
+        <button class="ui icon button"
+                onclick={_: Event =>
+                  UIFilter.changeProduct("")
+                  productFilter.value = ""}><i class="window close icon"></i></button>
       </div>
     </div>
 

@@ -23,6 +23,7 @@ case class AuthUser(id: AuthUser.UserId,
                    ) {
   val isAdmin: Boolean = groups.contains(AuthUser.adminGroup)
   val isManager: Boolean = groups.contains(AuthUser.managerGroup)
+  val isCustomer: Boolean = groups.contains(AuthUser.customerGroup)
 }
 
 object AuthUser {
@@ -31,7 +32,9 @@ object AuthUser {
 
   val adminGroup = "admin"
   val managerGroup = "manager"
-
+  val customerGroup = "customer"
+  
   implicit val jsonFormat: OFormat[AuthUser] = derived.oformat[AuthUser]()
 
 }
+

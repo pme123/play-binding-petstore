@@ -19,49 +19,49 @@ class PetstoreApi @Inject()(petRepo: PetRepo,
                            (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
-  def productTags(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def productTags(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.productTags()
       .map(tags =>
         Ok(Json.toJson(tags)).as(JSON)
       )
   }
 
-  def petTags(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def petTags(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.petTags()
       .map(tags =>
         Ok(Json.toJson(tags)).as(JSON)
       )
   }
 
-  def petCategories(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def petCategories(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.petCategories()
       .map(products =>
         Ok(Json.toJson(products)).as(JSON)
       )
   }
 
-  def petProducts(petCategory: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def petProducts(petCategory: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.petProducts(petRepo.petCategory(petCategory))
       .map(products =>
         Ok(Json.toJson(products)).as(JSON)
       )
   }
 
-  def pets(productIdent: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def pets(productIdent: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.pets(productIdent)
       .map(products =>
         Ok(Json.toJson(products)).as(JSON)
       )
   }
 
-  def pet(petIdent: String): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def pet(petIdent: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     petRepo.pet(petIdent)
       .map(pet =>
         Ok(Json.toJson(pet)).as(JSON)
       )
   }
 
-  def filter(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
+  def filter(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     request.body.asText.map { body =>
       Json.parse(body).validate[PetFilter]
         .map(petRepo.filter)

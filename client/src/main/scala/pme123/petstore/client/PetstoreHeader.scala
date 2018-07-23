@@ -3,7 +3,7 @@ package pme123.petstore.client
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
 import pme123.petstore.client.services.{ClientUtils, UIStore}
-
+import org.scalajs.dom.window
 import scala.language.implicitConversions
 
 private[client] object PetstoreHeader
@@ -67,10 +67,12 @@ private[client] object PetstoreHeader
     val user = UIStore.uiState.loggedInUser.bind
     if (user.isDefined)
       <div class="ui item">
-        <div class="ui floating dropdown labeled icon button">
-          <i class="user icon"></i>
+        <div class="ui floating dropdown icon basic button">
+          <div class="ui mini circular image">
+            <img src={staticAsset(s"/images/users/${user.get.avatar}")}/>
+            </div>
           <span class="text">
-            {user.get.fullName}
+            &nbsp;{user.get.fullName}
           </span>
           <div class="menu">
             <a href={s"${UIStore.uiState.webContext.value}/auth/logout"} class="item">Log Out</a>
@@ -83,6 +85,8 @@ private[client] object PetstoreHeader
         }<button class="ui basic icon button"
                  onclick={_: Event =>
                    info("LOG IN is not implemented")
+                   dom
+                     window.open(s"${UIStore.uiState.webContext.value}/auth/login","_self")
                    }
                  data:data-tooltip="Log In"
                  data:data-position="bottom right">
