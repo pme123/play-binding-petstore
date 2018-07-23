@@ -67,7 +67,7 @@ private[client] trait PetTable
   @dom
   private def editButton(pet: Pet) = {
     val user = UIStore.uiState.loggedInUser.bind
-    if (user.isDefined && user.get.authUser.isManager)
+    if (user.isManager)
       <button class="ui basic icon button"
               onclick={_: Event =>
                 info("Edit is not implemented")}
@@ -81,7 +81,7 @@ private[client] trait PetTable
   @dom
   private def addToCardButton(pet: Pet) = {
     val user = UIStore.uiState.loggedInUser.bind
-    if (user.isEmpty || user.get.authUser.isCustomer)
+    if (user.isCustomer)
       <button class="ui basic icon button"
               onclick={_: Event =>
                 info("Add to Card is not implemented")}

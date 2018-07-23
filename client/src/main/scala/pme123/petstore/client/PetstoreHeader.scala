@@ -69,10 +69,10 @@ private[client] object PetstoreHeader
       <div class="ui item">
         <div class="ui floating dropdown icon basic button">
           <div class="ui mini circular image">
-            <img src={staticAsset(s"/images/users/${user.get.avatar}")}/>
+            <img src={staticAsset(user.avatar)}/>
             </div>
           <span class="text">
-            &nbsp;{user.get.fullName}
+            &nbsp;{user.fullName}
           </span>
           <div class="menu">
             <a href={s"${UIStore.uiState.webContext.value}/auth/logout"} class="item">Log Out</a>

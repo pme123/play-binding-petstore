@@ -12,6 +12,7 @@ import scala.concurrent.ExecutionContext
 
 class AuthController @Inject()(accessControl: AccessControl,
                                userLoginTempl: views.html.login,
+                               indexTempl: views.html.index,
                                val spaComps: SPAComponents)
                               (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
@@ -39,12 +40,12 @@ class AuthController @Inject()(accessControl: AccessControl,
 
   def processLoginAttempt: Action[AnyContent] = Action.async { implicit request =>
     pageConfig(extractUser(request))
-      .map { projConf =>
+      .map { pageConf =>
 
         val errorFunction: Form[Identity] => Result = {
           formWithErrors: Form[Identity] =>
             // form validation/binding failed...
-            BadRequest(userLoginTempl(projConf, formWithErrors, formSubmitUrl))
+            BadRequest(userLoginTempl(pageConf, formWithErrors, formSubmitUrl))
         }
         val successFunction = {
           user: Identity =>
@@ -52,8 +53,7 @@ class AuthController @Inject()(accessControl: AccessControl,
             val foundUser = accessControl.isValidUser(user.username, user.password)
             if (foundUser) {
               val authUser = accessControl.getUser(user.username)
-              Redirect(routes.HomeController.index())
-                .flashing("info" -> "You are logged in.")
+              Ok(indexTempl(pageConf))
                 .withSession((SESSION_USERNAME_KEY, user.username),
                   (SESSION_GROUPS_KEY, authUser.groups.mkString(SESSION_GROUPS_SEPARATOR))
                 )
