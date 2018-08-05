@@ -5,7 +5,7 @@ import org.scalajs.dom.ext.Ajax.InputData
 import org.scalajs.dom.ext.{Ajax, AjaxException}
 import org.scalajs.dom.raw.{HTMLElement, XMLHttpRequest}
 import play.api.libs.json._
-import pme123.petstore.shared.services.User
+import pme123.petstore.shared.services.{Comments, User}
 
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
@@ -79,5 +79,11 @@ trait HttpServices
     val apiPath = s"${UIStore.uiState.webContext.value}/api/loggedInUser"
 
     httpGet(apiPath, (results: User) => UIStore.changeLoggedInUser(results))
+  }
+
+  def commentsFor(username:String): Binding[HTMLElement] = {
+    val apiPath = s"${UIStore.uiState.webContext.value}/api/comments/$username"
+
+    httpGet(apiPath, (results: Comments) => UIStore.changeComments(results))
   }
 }

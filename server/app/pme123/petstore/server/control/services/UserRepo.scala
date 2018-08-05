@@ -7,9 +7,9 @@ object UserRepo {
 
   import AuthUser._
 
-  private val demoCustomer = "demoCustomer"
-  private val demoManager = "demoManager"
-  private val demoAdmin = "demoAdmin"
+  val demoCustomer = "demoCustomer"
+  val demoManager = "demoManager"
+  val demoAdmin = "demoAdmin"
 
   val authUsers = Map(
     demoCustomer -> AuthUser(demoCustomer, Seq(customerGroup)),
@@ -27,10 +27,13 @@ object UserRepo {
     authUsers.keys.toSeq.contains(username)
 
 
-  def authUser(username:UserId): AuthUser =
+  def authUser(username: UserId): AuthUser =
     authUsers(username)
 
-  def userFor(authUser: AuthUser):User =
+  def userFor(authUser: AuthUser): User =
     users(authUser.id)
+
+  def userFor(username: String): User =
+    users(username)
 
 }

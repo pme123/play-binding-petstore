@@ -24,6 +24,8 @@ object SemanticUI {
 
     def form(params: js.Any*): SemanticJQuery = js.native
 
+    def sidebar(params: js.Any*): SemanticJQuery = js.native
+
   }
 
   // Monkey patching JQuery with implicit conversion

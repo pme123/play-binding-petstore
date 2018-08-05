@@ -3,7 +3,7 @@ package pme123.petstore.server.control.services
 import akka.actor._
 import akka.event.LoggingReceive
 import akka.util.Timeout
-import javax.inject.{Inject, Named}
+import javax.inject.Inject
 import play.api.Configuration
 import play.api.libs.concurrent.InjectedActorSupport
 import pme123.petstore.shared.services.Logging
@@ -14,9 +14,7 @@ import scala.concurrent.duration._
  * Provide some DI and configuration sugar for new UserActor instances.
   * Original see here: https://github.com/playframework/play-scala-websocket-example
   */
-class ClientParentActor @Inject()(@Named("jobParentActor")
-                                  jobParentActor: ActorRef
-                                  , childFactory: ClientActor.Factory,
+class ClientParentActor @Inject()(childFactory: ClientActor.Factory,
                                   configuration: Configuration)
                                  (implicit ec: ExecutionContext)
   extends Actor

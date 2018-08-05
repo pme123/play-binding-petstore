@@ -4,7 +4,11 @@ import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
 import pme123.petstore.client.services.{ClientUtils, UIStore}
 import org.scalajs.dom.window
+import org.scalajs.jquery.jQuery
+import pme123.petstore.client.services.SemanticUI.jq2semantic
+
 import scala.language.implicitConversions
+import scala.scalajs.js.timers.setTimeout
 
 private[client] object PetstoreHeader
   extends ClientUtils {
@@ -19,7 +23,8 @@ private[client] object PetstoreHeader
       }{spacer.bind}{//
       PetMenu.create().bind}{//
       shoppingCardButton.bind}{//
-      logInButton.bind}
+      logInButton.bind}{//
+      sidebarButton().bind}
     </div>
 
   }
@@ -84,10 +89,7 @@ private[client] object PetstoreHeader
         {ServerServices.loggedInUser().bind //
         }<button class="ui basic icon button"
                  onclick={_: Event =>
-                   info("LOG IN is not implemented")
-                   dom
-                     window.open(s"${UIStore.uiState.webContext.value}/auth/login","_self")
-                   }
+                   window.open(s"${UIStore.uiState.webContext.value}/auth/login", "_self")}
                  data:data-tooltip="Log In"
                  data:data-position="bottom right">
         <i class="sign in alternate icon large"></i>
@@ -95,5 +97,20 @@ private[client] object PetstoreHeader
       </div>
   }
 
+  @dom
+  private def sidebarButton() = {
+    <div class=""
+         onclick={_: Event =>
+           setTimeout(200) {
+             jQuery(".ui.sidebar") //.sidebar(js.Dynamic.literal(context = ".bottom.segment"))
+               .sidebar("toggle")
+           }}
+         data:data-tooltip="Ask us!"
+         data:data-position="bottom left">
+      <a class="item">
+        <i class="comments big icon"></i>
+      </a>
+    </div>
+  }
 
 }

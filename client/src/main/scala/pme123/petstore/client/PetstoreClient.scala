@@ -1,6 +1,6 @@
 package pme123.petstore.client
 
-import com.thoughtworks.binding.Binding.Var
+import com.thoughtworks.binding.Binding.{BindingSeq, Constants, Var}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLElement
@@ -32,14 +32,19 @@ object PetstoreClient
     setTimeout(200) {
       jQuery(".ui.dropdown").dropdown(js.Dynamic.literal(on = "hover"))
       jQuery(".pets").popup(js.Dynamic.literal(on = "click"))
-      //jQuery(".ui.item .ui.input").popup(js.Dynamic.literal(on = "hover"))
     }
   }
 
-  @dom
-  def render: Binding[HTMLElement] = {
+  def render = Binding{
+   Constants(
+      pusher,
+      CommentsSidebar.create()
+    ).map(_.bind)
+  }
 
-    <div class="">
+  @dom
+  private lazy val pusher: Binding[HTMLElement] =
+    <div class="pusher">
       {//
       initCategories.bind}{//
       PetstoreHeader.create().bind}<div class="ui four column doubling stackable grid">
@@ -54,8 +59,6 @@ object PetstoreClient
       </div>
     </div>
     </div>
-  }
-
 
   @dom
   private lazy val initCategories: Binding[HTMLElement] = {

@@ -3,7 +3,7 @@ package pme123.petstore.server.boundary.services
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
-import pme123.petstore.server.control.services.UserRepo
+import pme123.petstore.server.control.services.CommentsRepo
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,19 +12,17 @@ import scala.concurrent.{ExecutionContext, Future}
   * Original see here: https://github.com/playframework/play-scala-websocket-example
   */
 @Singleton
-class UserApi @Inject()(val spaComps: SPAComponents)
-                       (implicit val ec: ExecutionContext)
+class CommentsApi @Inject()(val spaComps: SPAComponents)
+                           (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
-  def loggedInUser(): Action[AnyContent] = AuthenticatedAction.async { implicit request: Request[AnyContent] =>
-    val user = extractUser.map(UserRepo.userFor)
+  def commentsFor(username: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    val comments = CommentsRepo.commentsForUser(username)
 
     Future.successful(
-      Ok(Json.toJson(user)).as(JSON)
+      Ok(Json.toJson(comments)).as(JSON)
     )
   }
 }
 
-object UserApi {
 
-}

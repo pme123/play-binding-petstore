@@ -1,7 +1,7 @@
 package pme123.petstore.client.services
 
-import com.thoughtworks.binding.Binding.Var
-import pme123.petstore.shared.services.{AuthUser, Logging, User}
+import com.thoughtworks.binding.Binding.{Var, Vars}
+import pme123.petstore.shared.services._
 
 import scala.language.implicitConversions
 
@@ -21,9 +21,17 @@ object UIStore extends Logging {
     loggedInUser
   }
 
+  def changeComments(comments: Comments): Comments = {
+    info(s"UIStore: changeComments for ${comments.user}")
+    uiState.comments.value.clear()
+    uiState.comments.value ++= comments.comments
+    comments
+  }
+
   case class UIState(
                       loggedInUser: Var[LoggedInUser] = Var(LoggedInUser()),
-                        webContext: Var[String] = Var("")
+                      comments: Vars[Comment] = Vars(),
+                      webContext: Var[String] = Var("")
                     )
 
 }
@@ -41,4 +49,6 @@ case class LoggedInUser(maybeUser: Option[User] = None) {
     s"/images/users/$avatar"
   }
   val fullName: String = maybeUser.map(_.fullName).getOrElse("Anonymous")
+
+  val username: String = maybeUser.map(_.authUser.id).getOrElse("anonymous")
 }
