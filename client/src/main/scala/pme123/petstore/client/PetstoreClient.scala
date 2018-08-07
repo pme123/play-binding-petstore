@@ -1,6 +1,6 @@
 package pme123.petstore.client
 
-import com.thoughtworks.binding.Binding.{BindingSeq, Constants, Var}
+import com.thoughtworks.binding.Binding.{Constants, Var}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.HTMLElement
@@ -35,8 +35,8 @@ object PetstoreClient
     }
   }
 
-  def render = Binding{
-   Constants(
+  def render = Binding {
+    Constants(
       pusher,
       CommentsSidebar.create()
     ).map(_.bind)
@@ -51,7 +51,9 @@ object PetstoreClient
       {//
       LeftMenu.create().bind //
       }<div class="twelve wide column">
+        {Breadcrumb.create().bind}
         <div class="ui basic segment">
+
           {//
           ServerServices.runFilter.bind}{//
           mainView.bind.create().bind}

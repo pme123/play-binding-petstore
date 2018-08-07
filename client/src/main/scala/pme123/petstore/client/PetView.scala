@@ -10,7 +10,7 @@ import scala.util.matching.Regex
 private[client] case class PetView(categoryName: String, productIdent: String, petIdent: String)
   extends MainView {
 
-  val link: String = s"${PetView.name}/$categoryName/$productIdent/$petIdent"
+  val link: String = s"${Pet.name}/$categoryName/$productIdent/$petIdent"
 
   // 1. level of abstraction
   // **************************
@@ -102,7 +102,5 @@ private[client] case class PetView(categoryName: String, productIdent: String, p
 
 object PetView {
   val hashRegex: Regex = """#pet/([^/]*)/([^/]*)/([^/]*)""".r
-
-  def name: String = "pet"
 
 }

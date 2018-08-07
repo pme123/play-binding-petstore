@@ -76,9 +76,7 @@ private[client] trait PetTable
 
   @dom
   def petLink(pet: Pet): Binding[HTMLElement] = {
-    val prodIdent = s"${pet.product.category.ident}/${pet.product.productIdent}"
-    val petLink = s"#${PetView.name}/$prodIdent/${pet.itemIdent}"
-    <a href={petLink}>
+    <a href={pet.link}>
       <div class="ui mini circular image">
         <img src={staticAsset(pet.firstPhotoUrl)}/>
       </div>

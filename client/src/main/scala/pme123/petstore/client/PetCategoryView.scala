@@ -34,7 +34,7 @@ private[client] case class PetCategoryView(categoryName: String)
   extends MainView
     with CategoryView {
 
-  val link: String = s"${PetCategoryView.name}/$categoryName"
+  val link: String = s"${PetCategory.name}/$categoryName"
 
   // 1. level of abstraction
   // **************************
@@ -144,7 +144,5 @@ private[client] case class PetCategoryView(categoryName: String)
 
 object PetCategoryView {
   val hashRegex: Regex = """#category/([^/]*)""".r
-
-  def name: String = "category"
 
 }

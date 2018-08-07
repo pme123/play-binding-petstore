@@ -11,7 +11,7 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
   extends PetTable
     with CategoryView {
 
-  val link: String = s"${PetProductView.name}/$categoryName/$productIdent"
+  val link: String = s"${PetProduct.name}/$categoryName/$productIdent"
 
   // 1. level of abstraction
   // **************************
@@ -66,7 +66,4 @@ private[client] case class PetProductView(categoryName: String, productIdent: St
 
 object PetProductView {
   val hashRegex: Regex = """#product/([^/]*)/([^/]*)""".r
-
-  def name: String = "product"
-
 }

@@ -20,10 +20,14 @@ case class PetCategory(ident: String, name: String, subTitle: String)
   def styleName: String = ident
 
   def identPrefix: String = ident.take(3).toUpperCase
+
+  val link: String = s"#${PetCategory.name}/$ident"
+
 }
 
 object PetCategory {
 
+  def name: String = "category"
 
   implicit val jsonFormat: OFormat[PetCategory] = derived.oformat[PetCategory]()
 }

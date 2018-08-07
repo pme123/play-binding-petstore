@@ -26,11 +26,14 @@ case class PetProduct(
 
   val ident: String = productIdent
 
+  val link: String = s"#${PetProduct.name}/${category.ident}/$productIdent"
+
   def identPrefix: String = name.take(3).toUpperCase
 
 }
 
 object PetProduct {
   implicit val jsonFormat: OFormat[PetProduct] = derived.oformat[PetProduct]()
+  def name: String = "product"
 
 }

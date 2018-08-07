@@ -46,7 +46,7 @@ private[client] object PetMenu
         <div class={s"item ${activeStyle(cat.contains(petCategory))}"}>
           <h4>
             <a
-            href={s"#${PetCategoryView.name}/${petCategory.ident}"}
+            href={petCategory.link}
             onclick={_: Event =>
               PetUIStore.changePetCategory(petCategory)
               PetUIStore.clearPetProduct()
@@ -70,7 +70,7 @@ private[client] object PetMenu
          PetUIStore.changePetProduct(petProduct)
          PetUIStore.changePetCategory(petProduct.category)
          hidePopup}
-       href={s"#${PetProductView.name}/${petProduct.category.ident}/${petProduct.productIdent}"}>
+       href={petProduct.link}>
       {petProduct.name}
     </a>
   }

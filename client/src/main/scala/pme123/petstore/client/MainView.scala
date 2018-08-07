@@ -14,17 +14,14 @@ trait MainView
 
   @dom
   def categoryLink(petCategory: PetCategory): Binding[HTMLElement] = {
-    val catLink = s"#${PetCategoryView.name}/${petCategory.ident}"
-    <a href={catLink}>
+    <a href={petCategory.link}>
       {petCategory.name}
     </a>
   }
 
   @dom
   def productLink(petProduct: PetProduct): Binding[HTMLElement] = {
-    val prodIdent = s"${petProduct.category.ident}/${petProduct.productIdent}"
-    val prodLink = s"#${PetProductView.name}/$prodIdent"
-    <a href={prodLink}>
+    <a href={petProduct.link}>
       {petProduct.name}
     </a>
   }

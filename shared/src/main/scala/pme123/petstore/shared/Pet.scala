@@ -27,6 +27,8 @@ case class Pet(
               )
   extends Identifiable {
 
+  val link = s"#${Pet.name}/${product.category.ident}/${product.productIdent}/$itemIdent"
+
   val firstPhotoUrl: String = s"images/catalog/${photoUrls.headOption.getOrElse("noimage.png")}"
 
   val ident: String = itemIdent
@@ -35,6 +37,9 @@ case class Pet(
 }
 
 object Pet {
+
+  def name: String = "pet"
+
   implicit val jsonFormat: OFormat[Pet] = derived.oformat[Pet]()
 
 }
