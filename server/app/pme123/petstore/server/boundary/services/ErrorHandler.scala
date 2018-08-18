@@ -1,5 +1,6 @@
-package pme123.petstore.server.boundary
+package pme123.petstore.server.boundary.services
 
+import com.mohiva.play.silhouette.api.actions.{SecuredErrorHandler, UnsecuredErrorHandler}
 import javax.inject.{Inject, Provider, Singleton}
 import play.api._
 import play.api.http.DefaultHttpErrorHandler
@@ -17,7 +18,10 @@ class ErrorHandler @Inject() (
     sourceMapper: OptionalSourceMapper,
     router: Provider[Router],
     val messagesApi: MessagesApi
-) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) with I18nSupport {
+) extends DefaultHttpErrorHandler(env, config, sourceMapper, router)
+  with SecuredErrorHandler
+  with UnsecuredErrorHandler
+  with I18nSupport {
 
   // 404 - page not found error
   override def onNotFound(request: RequestHeader, message: String): Future[Result] = Future.successful {
@@ -30,5 +34,15 @@ class ErrorHandler @Inject() (
   // 500 - internal server error
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = Future.successful {
     InternalServerError(views.html.defaultpages.error(exception))
+  }
+
+  // 401 - Unauthorized
+  override def onNotAuthenticated(implicit request: RequestHeader): Future[Result] = Future.successful {
+    Redirect(routes.AuthController.signIn(Some(request.uri)))
+  }
+
+  // 403 - Forbidden
+  override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = Future.successful {
+    Forbidden(views.html.defaultpages.unauthorized())
   }
 }

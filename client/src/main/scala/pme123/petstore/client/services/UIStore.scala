@@ -40,9 +40,9 @@ case class LoggedInUser(maybeUser: Option[User] = None) {
 
   val isDefined: Boolean = maybeUser.isDefined
 
-  val isAdmin: Boolean = maybeUser.isDefined && maybeUser.get.authUser.groups.contains(AuthUser.adminGroup)
-  val isManager: Boolean = maybeUser.isDefined && maybeUser.get.authUser.groups.contains(AuthUser.managerGroup)
-  val isCustomer: Boolean = maybeUser.isEmpty || maybeUser.get.authUser.groups.contains(AuthUser.customerGroup)
+  val isAdmin: Boolean = maybeUser.isDefined && maybeUser.get.isAdmin
+  val isManager: Boolean = maybeUser.isDefined && maybeUser.get.isManager
+  val isCustomer: Boolean = maybeUser.isEmpty || maybeUser.get.isCustomer
 
   val avatar: String = {
     val avatar = maybeUser.map(_.avatar).getOrElse("anonymous.png")
@@ -50,5 +50,5 @@ case class LoggedInUser(maybeUser: Option[User] = None) {
   }
   val fullName: String = maybeUser.map(_.fullName).getOrElse("Anonymous")
 
-  val username: String = maybeUser.map(_.authUser.id).getOrElse("anonymous")
+  val username: String = maybeUser.map(_.id).getOrElse("anonymous")
 }

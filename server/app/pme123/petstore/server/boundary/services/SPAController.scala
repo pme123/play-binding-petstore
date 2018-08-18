@@ -1,24 +1,28 @@
 package pme123.petstore.server.boundary.services
 
+import com.mohiva.play.silhouette.api.Silhouette
 import play.Environment
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import pme123.petstore.server.boundary.IdentityApi
 import pme123.petstore.server.control.PetConfiguration
-import pme123.petstore.server.entity.PageConfig
-import pme123.petstore.shared.services.{AccessControl, AuthUser, Logging}
+import pme123.petstore.server.control.auth.{DefaultEnv, SecuredController}
+import pme123.petstore.server.entity.{AuthUser, PageConfig}
+import pme123.petstore.shared.services.Logging
 
 import scala.concurrent.Future
 
 abstract class SPAController(spaComps: SPAComponents)
   extends AbstractController(spaComps.cc)
+    with SecuredController[DefaultEnv]
     with I18nSupport
-    with Secured
     with Logging {
 
   lazy val env: Environment = spaComps.env
   lazy val config: PetConfiguration = spaComps.config
   lazy val cc: ControllerComponents = spaComps.cc
-  lazy val accessControl: AccessControl = spaComps.accessControl
+  lazy val identityApi: IdentityApi = spaComps.identityApi
+  def silhouette: Silhouette[DefaultEnv] = spaComps.silhouette
 
   def pageConfig(maybeUser: Option[AuthUser]): Future[PageConfig] =
     Future.successful(PageConfig(context, env.isDev))

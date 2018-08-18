@@ -1,12 +1,12 @@
 @import pme123.petstore.server.entity.PageConfig
 @import pme123.petstore.server.entity.Identity
-
+@import pme123.petstore.server.boundary.services.SignInForm
 
 @this(webJarsUtil: org.webjars.play.WebJarsUtil, assets: AssetsFinder, header: views.html.header)
-
-@(pageConfig: PageConfig,
-        form: Form[Identity],
-        postUrl: Call)(implicit request: Request[_])
+@(signInForm: Form[SignInForm.Data],
+        redirectUrl: Option[String],
+        pageConfig: PageConfig
+)(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html>
@@ -37,44 +37,50 @@
                     <div class="ui item login-logo" id="login-logo">
                     </div>
                     <div class="content">
-                        Log in
+                        Anmelden
                     </div>
                 </h3>
                 @request.flash.data.map { case (name, value) =>
                 <div class="ui @name message">@value</div>
                 }
                 @* Global errors are not tied to any particular form field *@
-                @if(form.hasGlobalErrors) {
-                    @form.globalErrors.map { error: FormError =>
+                @if(signInForm.hasGlobalErrors) {
+                    @signInForm.globalErrors.map { error: FormError =>
                         <div class="ui error message">
                             Error: @error.key: @error.message
                         </div>
                     }
                 }
+                @import helper._
 
-                <form action="@postUrl" method="post" id="user-login-form" class="ui large form">
+                @form(action = pme123.petstore.server.boundary.services.routes.AuthController.authenticate(redirectUrl), 'class -> "ui large form") {
                     @helper.CSRF.formField
                     <div class="ui segment">
-                    <div class="field">
+                        <div class="field">
                             <div class="ui left icon input">
                                 <i class="user icon"></i>
-                                <input id="username" type="text" name="username" placeholder="Username">
+                                <input id="username" type="text" name="username" placeholder="Username" />
                             </div>
                         </div>
 
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="user icon"></i>
-                                <input id="password" type="password" name="password" placeholder="Password">
+                                <input id="password" type="password" name="password" placeholder="Passwort" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input id="rememberMe" name="rememberMe" type="checkbox" value="true" />
+                                <input name="rememberMe" type="hidden" value="false" />
+                                <label>Merken</label>
                             </div>
                         </div>
                     </div>
-
-                    <button class="ui fluid large submit basic button">Login</button>
-
-                </form>
+                    <button class="ui fluid large submit button">Login</button>
+                }
             </div>
         </div>
-
     </body>
 </html>

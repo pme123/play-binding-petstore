@@ -5,12 +5,12 @@
 # Index file for the JobCockpit.
 GET         /                                    pme123.petstore.server.boundary.services.HomeController.index()
 # auth stuff
-GET         /auth/login                          pme123.petstore.server.boundary.services.AuthController.showLoginForm
-POST        /auth/doLogin                        pme123.petstore.server.boundary.services.AuthController.processLoginAttempt
-GET         /auth/logout                         pme123.petstore.server.boundary.services.AuthController.logout
+GET         /auth/login                          pme123.petstore.server.boundary.services.AuthController.signIn(redirectUrl: Option[String] ?= None)
+POST        /auth/doLogin                        pme123.petstore.server.boundary.services.AuthController.authenticate(redirectUrl: Option[String] ?= None)
+GET         /auth/logout                         pme123.petstore.server.boundary.services.AuthController.signOut(redirectUrl: Option[String] ?= None)
 
 # Websocket for live updates (LogEntries) on Jobs
-#GET        /ws/:jobIdent                       pme123.petstore.server.boundary.WebsocketController.ws(jobIdent, subWebpath: Option[String], resultCount: Option[Int], resultFilter: Option[String])
+GET         /ws/:username                        pme123.petstore.server.boundary.WebsocketController.wsClient(username: String)
 # API to get all the Jobs that are provided
 GET         /api/loggedInUser                    pme123.petstore.server.boundary.services.UserApi.loggedInUser()
 GET         /api/comments/:username              pme123.petstore.server.boundary.services.CommentsApi.commentsFor(username: String)

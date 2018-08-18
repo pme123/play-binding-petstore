@@ -1,11 +1,12 @@
 package pme123.petstore.server.control.services
 
+import pme123.petstore.server.entity.AuthUser
 import pme123.petstore.shared.services.Language.{DE, EN}
-import pme123.petstore.shared.services.{AuthUser, User}
+import pme123.petstore.shared.services.User
 
 object UserRepo {
 
-  import AuthUser._
+  import User._
 
   val demoCustomer = "demoCustomer"
   val demoManager = "demoManager"
@@ -18,9 +19,9 @@ object UserRepo {
   )
 
   val users = Map(
-    demoCustomer -> User(authUsers(demoCustomer), "Peter", "Caprio", "peter@caprio.com", "caprio.jpg", EN),
-    demoManager -> User(authUsers(demoManager), "Kent", "Reeves", "kent@petstore.com", "reeves.jpg", EN),
-    demoAdmin -> User(authUsers(demoAdmin), "Daniel", "Devito", "daniel@petstore.com", "devito.jpg", DE)
+    demoCustomer -> User(demoCustomer, Seq(customerGroup), "Peter", "Caprio", "peter@caprio.com", "caprio.jpg", EN),
+    demoManager -> User(demoManager, Seq(managerGroup), "Kent", "Reeves", "kent@petstore.com", "reeves.jpg", EN),
+    demoAdmin -> User(demoAdmin, Seq(adminGroup), "Daniel", "Devito", "daniel@petstore.com", "devito.jpg", DE)
   )
 
   def contains(username: UserId): Boolean =

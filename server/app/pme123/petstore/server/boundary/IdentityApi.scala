@@ -1,10 +1,10 @@
 package pme123.petstore.server.boundary
 
 import pme123.petstore.server.control.services.UserRepo
-import pme123.petstore.shared.services.AuthUser.UserId
-import pme123.petstore.shared.services.{AccessControl, AuthUser}
+import pme123.petstore.server.entity.AuthUser
+import pme123.petstore.shared.services.User.UserId
 
-class PetstoreAccessControl extends AccessControl{
+class IdentityApi {
 
   def isValidUser(username: UserId, pwd: String): Boolean =
     UserRepo.contains(username) // no password required

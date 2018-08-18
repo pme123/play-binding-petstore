@@ -15,7 +15,7 @@ class HomeController @Inject()(template: views.html.index
                               (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
-  def index(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+  def index(): Action[AnyContent] = SecuredAction.async { implicit request: Request[AnyContent] =>
     // uses the AssetsFinder API
     pageConfig(None)
       .map(pc => Ok(template(pc)))

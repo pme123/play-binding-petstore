@@ -1,88 +1,116 @@
 package pme123.petstore.server.boundary.services
 
+import com.mohiva.play.silhouette.api._
+import com.mohiva.play.silhouette.api.exceptions.ProviderException
+import com.mohiva.play.silhouette.api.util.{Clock, Credentials}
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import javax.inject.Inject
-import play.api.data.Forms._
-import play.api.data._
+import play.api.i18n.Messages
 import play.api.mvc._
-import pme123.petstore.server.boundary.services
-import pme123.petstore.server.entity.Identity
-import pme123.petstore.shared.services.AccessControl
+import pme123.petstore.server.boundary.IdentityApi
+import pme123.petstore.server.control.auth.{DefaultEnv, UserService}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class AuthController @Inject()(accessControl: AccessControl,
-                               userLoginTempl: views.html.login,
-                               indexTempl: views.html.index,
-                               val spaComps: SPAComponents)
+/**
+  * @see https://www.playframework.com/documentation/2.6.x/ScalaForms#Passing-MessagesProvider-to-Form-Helpers
+  */
+class AuthController @Inject()(identityApi:IdentityApi,
+                               userService: UserService,
+                               signInTempl: views.html.login,
+                               clock: Clock,
+                               val comps: SPAComponents)
                               (implicit val ec: ExecutionContext)
-  extends SPAController(spaComps) {
+  extends SPAController(comps) {
 
-  import Secured._
+  def signIn(redirectUrl: Option[String] = None): Action[AnyContent] = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(_) => Future.successful(Redirect(routes.HomeController.index()))
+      case None =>
+        val signInForm = SignInForm.form
+        pageConfig(None).map(conf=>
+        Ok(signInTempl(signInForm, redirectUrl, conf)))
+    }
+  }
 
-  val form: Form[Identity] = Form(
+  /**
+    * Authenticates the user based on his username and password
+    */
+  def authenticate(redirectUrl: Option[String] = None): Action[AnyContent] = UnsecuredAction.async { implicit request =>
+    SignInForm.form.bindFromRequest.fold(
+      formWithErrors =>pageConfig(None).map(conf=>
+        BadRequest(signInTempl(formWithErrors, redirectUrl, conf))),
+      formData => {
+        val authService = silhouette.env.authenticatorService
+        verifyCredentials(Credentials(formData.username, formData.password)).flatMap { loginInfo =>
+          userService.retrieve(loginInfo).flatMap {
+            case Some(user) => for {
+              authenticator <- authService.create(loginInfo).map(authenticatorWithRememberMe(_, formData.rememberMe))
+              cookie <- authService.init(authenticator)
+              result <- authService.embed(cookie, redirectResult(redirectUrl))
+            } yield {
+              silhouette.env.eventBus.publish(LoginEvent(user, request))
+              result
+            }
+            case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
+          }
+        }.recover {
+          case _: ProviderException => Redirect(routes.AuthController.signIn(redirectUrl)).flashing("error" -> Messages("auth.credentials.incorrect"))
+        }
+      }
+    )
+  }
+
+  /**
+    * Signs out the user
+    */
+  def signOut(redirectUrl: Option[String] = None): Action[AnyContent] = SecuredAction.async { implicit request =>
+    silhouette.env.eventBus.publish(LogoutEvent(request.identity, request))
+    val authService = silhouette.env.authenticatorService
+    authService.discard(request.authenticator, redirectResult(redirectUrl))
+  }
+
+  private def redirectResult(redirectUrl: Option[String] = None): Result =
+    redirectUrl.map(Redirect(_)).getOrElse(Redirect(routes.HomeController.index()))
+
+  private def verifyCredentials(credentials: Credentials): Future[LoginInfo] = {
+    if (identityApi.isValidUser(credentials.identifier, credentials.password))
+      Future.successful(LoginInfo(credentials.identifier, userService.providerKey))
+    else
+      throw new ProviderException("Wrong Username or Password")
+  }
+
+  private def authenticatorWithRememberMe(authenticator: CookieAuthenticator, rememberMe: Boolean) = {
+    if (rememberMe) {
+      val config = comps.config
+      authenticator.copy(
+        expirationDateTime = clock.now.withDurationAdded(config.authenticatorExpiry.toMillis, 1),
+        idleTimeout = config.authenticatorIdleTimeout,
+        cookieMaxAge = config.cookieMaxAge
+      )
+    } else
+      authenticator.copy()
+  }
+
+}
+
+import play.api.data.Form
+import play.api.data.Forms._
+
+object SignInForm {
+
+  val form = Form(
     mapping(
-      "username" -> nonEmptyText
-        .verifying("too few chars", s => lengthIsGreaterThanNCharacters(s, 2))
-        .verifying("too many chars", s => lengthIsLessThanNCharacters(s, 20)),
-      "password" -> nonEmptyText
-        .verifying("too few chars", s => lengthIsGreaterThanNCharacters(s, 2))
-        .verifying("too many chars", s => lengthIsLessThanNCharacters(s, 30)),
-    )(Identity.apply)(Identity.unapply)
+      "username" -> nonEmptyText,
+      "password" -> nonEmptyText,
+      "rememberMe" -> boolean
+    )(Data.apply)(Data.unapply)
   )
 
-  private val formSubmitUrl = routes.AuthController.processLoginAttempt()
+  case class Data(username: String,
+                  password: String,
+                  rememberMe: Boolean)
 
-  def showLoginForm: Action[AnyContent] = Action.async {
-    implicit request =>
-      pageConfig(extractUser(request))
-        .map(pc => Ok(userLoginTempl(pc, form, formSubmitUrl)))
-  }
-
-  def processLoginAttempt: Action[AnyContent] = Action.async { implicit request =>
-    pageConfig(extractUser(request))
-      .map { pageConf =>
-
-        val errorFunction: Form[Identity] => Result = {
-          formWithErrors: Form[Identity] =>
-            // form validation/binding failed...
-            BadRequest(userLoginTempl(pageConf, formWithErrors, formSubmitUrl))
-        }
-        val successFunction = {
-          user: Identity =>
-            // form validation/binding succeeded ...
-            val foundUser = accessControl.isValidUser(user.username, user.password)
-            if (foundUser) {
-              val authUser = accessControl.getUser(user.username)
-              Ok(indexTempl(pageConf))
-                .withSession((SESSION_USERNAME_KEY, user.username),
-                  (SESSION_GROUPS_KEY, authUser.groups.mkString(SESSION_GROUPS_SEPARATOR))
-                )
-            } else {
-              Redirect(services.routes.AuthController.showLoginForm())
-                .flashing("error" -> "Invalid username/password.")
-            }
-        }
-        val formValidationResult: Form[Identity] = form.bindFromRequest
-        formValidationResult.fold(
-          errorFunction,
-          successFunction
-        )
-      }
-  }
-
-  def logout = Action {
-    implicit request: Request[AnyContent] =>
-      // docs: “withNewSession ‘discards the whole (old) session’”
-      Redirect(routes.HomeController.index())
-        .flashing("info" -> "Sie sind ausgeloggt.")
-        .withNewSession
-  }
-
-  private def lengthIsGreaterThanNCharacters(s: String, n: Int): Boolean = {
-    if (s.length > n) true else false
-  }
-
-  private def lengthIsLessThanNCharacters(s: String, n: Int): Boolean = {
-    if (s.length < n) true else false
-  }
 }
+

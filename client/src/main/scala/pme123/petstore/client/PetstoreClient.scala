@@ -37,8 +37,8 @@ object PetstoreClient
 
   def render = Binding {
     Constants(
-      pusher,
-      CommentsSidebar.create()
+      CommentsSidebar.create(),
+        pusher
     ).map(_.bind)
   }
 

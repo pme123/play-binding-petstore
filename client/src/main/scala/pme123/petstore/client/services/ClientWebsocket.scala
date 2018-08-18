@@ -3,6 +3,7 @@ package pme123.petstore.client.services
 import com.thoughtworks.binding.Binding.Var
 import org.scalajs.dom._
 import play.api.libs.json.Json
+import pme123.petstore.shared.services.PathMsg
 
 import scala.scalajs.js.timers.setTimeout
 
@@ -13,7 +14,7 @@ object ClientWebsocket
     s"${
       window.location.protocol
         .replace("http", "ws")
-    }//${window.location.host}${UIStore.uiState.webContext.value}/ws"
+    }//${window.location.host}${UIStore.uiState.webContext.value}/ws/client"
 
   private val webSocket: Var[Option[WebSocket]] = Var(None)
   private val reconnectWSCode = 3001
@@ -54,6 +55,13 @@ object ClientWebsocket
         }
       }
     }
+  }
+
+  def send(msg: String) {
+    val username = UIStore.uiState.loggedInUser.value.username
+    webSocket.value
+      .foreach(_.send(Json.toJson(PathMsg(username, msg))
+        .toString()))
   }
 
   def closeWS(): Unit = {

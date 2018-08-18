@@ -26,6 +26,7 @@ object Settings {
   lazy val jQueryV = "2.2.4"
   lazy val sloggingV = "0.6.1"
   lazy val semanticV = "2.3.1"
+  lazy val silhouetteV ="5.0.5"
   lazy val scalaTestV = "3.0.4"
 
   lazy val organizationSettings = Seq(
@@ -60,6 +61,13 @@ object Settings {
     , "org.apache.poi" % "poi-ooxml" % "3.17"
     // scalajs for server
     , "com.vmunier" %% "scalajs-scripts" % "1.1.1"
+    //Silhouette
+    , "com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteV
+    , "com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteV
+    , "com.mohiva" %% "play-silhouette-persistence" % silhouetteV
+    , "com.mohiva" %% "play-silhouette-testkit" % silhouetteV % "test"
+    // scala-guice
+    , "net.codingwell" %% "scala-guice" % "4.2.1"
     // webjars for Semantic-UI
     , "org.webjars" %% "webjars-play" % "2.6.1"
     , "org.webjars" % "Semantic-UI" % semanticV
