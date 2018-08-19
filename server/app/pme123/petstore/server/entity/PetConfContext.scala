@@ -25,8 +25,10 @@ object PetConfSettings {
   val charEncodingProp = "char.encoding"
   val timezoneProp = "timezone"
   val wsocketHostsAllowedProp = "wsocket.hosts.allowed"
-
+  // kafka
+  val kafkaWsBootstrapServersProp = "kafka.ws.bootstrap-servers"
   val kafkaWsProducerProp = "kafka.ws.producer"
+  val kafkaWsProducerTopicProp = "kafka.ws.producer.topic"
 
   // security
   val authenticatorExpiryProp = "security.cookieAuthenticator.rememberMe.authenticatorExpiry"
@@ -54,8 +56,10 @@ abstract class PetConfSettings(config: Configuration)
   val timezone: String = baseConfig.get[String](timezoneProp)
   val timezoneID: ZoneId = ZoneId.of(timezone)
   val wsocketHostsAllowed: Seq[String] = baseConfig.get[Seq[String]](wsocketHostsAllowedProp)
-
+  // kafka
+  val kafkaWsBootstrapServers: String = baseConfig.get[String](kafkaWsBootstrapServersProp)
   val kafkaWsProducer: Configuration = baseConfig.get[Configuration](kafkaWsProducerProp)
+  val kafkaWsProducerTopic: String = baseConfig.get[String](kafkaWsProducerTopicProp)
 
   //security
   val authenticatorExpiry: FiniteDuration = config.get[FiniteDuration](authenticatorExpiryProp)
@@ -72,17 +76,18 @@ abstract class PetConfSettings(config: Configuration)
       , SettingsProp(timezoneProp, timezone)
       , SettingsProp(charEncodingProp, charEncoding)
       , SettingsProp(wsocketHostsAllowedProp, wsocketHostsAllowed.map(_.toString))
+      // kafka
+      , SettingsProp(kafkaWsBootstrapServersProp, kafkaWsBootstrapServers)
+      , SettingsProp(kafkaWsProducerProp, kafkaWsProducer.toString)
+      , SettingsProp(kafkaWsProducerTopicProp, kafkaWsProducerTopic)
+      // security
       , SettingsProp(authenticatorExpiryProp, authenticatorExpiry)
       , SettingsProp(authenticatorIdleTimeoutProp, authenticatorIdleTimeout)
       , SettingsProp(cookieMaxAgeProp, cookieMaxAge)
-
       // other
       , SettingsProp(httpContextProp, httpContext)
-
     )
   }
-
-
 }
 
 

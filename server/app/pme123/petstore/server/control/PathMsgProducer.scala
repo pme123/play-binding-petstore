@@ -32,7 +32,7 @@ class PathMsgProducer @Inject()(comps: SPAComponents)
   private val kafkaConfig = comps.config.kafkaWsProducer.underlying
   private val producerSettings =
     ProducerSettings(kafkaConfig, new StringSerializer, new StringSerializer)
-      .withBootstrapServers("localhost:9092")
+      .withBootstrapServers(comps.config.kafkaWsBootstrapServers)
 
   // Log events to the console
   private val in: Sink[JsValue, NotUsed] =
@@ -52,7 +52,7 @@ class PathMsgProducer @Inject()(comps: SPAComponents)
       .map(_.get)
       .map { msg =>
         ProducerMessage.Message(
-          new ProducerRecord("petstore-msg-topic", msg.username, s"${msg.username},${msg.msg}"),
+          new ProducerRecord(comps.config.kafkaWsProducerTopic, msg.username, s"${msg.username},${msg.msg}"),
           "passThrough"
         )
       }.via(Producer.flexiFlow(producerSettings))
