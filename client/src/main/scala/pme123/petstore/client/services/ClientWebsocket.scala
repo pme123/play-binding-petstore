@@ -3,7 +3,7 @@ package pme123.petstore.client.services
 import com.thoughtworks.binding.Binding.Var
 import org.scalajs.dom._
 import play.api.libs.json.Json
-import pme123.petstore.shared.services.PathMsg
+import pme123.petstore.shared.PathMsg
 
 import scala.scalajs.js.timers.setTimeout
 
@@ -14,7 +14,7 @@ object ClientWebsocket
     s"${
       window.location.protocol
         .replace("http", "ws")
-    }//${window.location.host}${UIStore.uiState.webContext.value}/ws/client"
+    }//${window.location.host}${UIStore.uiState.webContext.value}/ws/pathMsgProducerWS"
 
   private val webSocket: Var[Option[WebSocket]] = Var(None)
   private val reconnectWSCode = 3001
@@ -28,7 +28,8 @@ object ClientWebsocket
     info(s"Connect to Websocket: $path")
     socket.onmessage = {
       e: MessageEvent =>
-        val message = Json.parse(e.data.toString)
+        val message = e.data.toString
+          info(s"Received from Websocket: $message")
         /*message.validate[AdapterMsg] match {
           case JsSuccess(AdapterRunning(logReport), _) =>
             UIStore.changeIsRunning(true)

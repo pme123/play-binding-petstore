@@ -26,6 +26,8 @@ object PetConfSettings {
   val timezoneProp = "timezone"
   val wsocketHostsAllowedProp = "wsocket.hosts.allowed"
 
+  val kafkaWsProducerProp = "kafka.ws.producer"
+
   // security
   val authenticatorExpiryProp = "security.cookieAuthenticator.rememberMe.authenticatorExpiry"
   val authenticatorIdleTimeoutProp = "security.cookieAuthenticator.rememberMe.authenticatorIdleTimeout"
@@ -52,6 +54,8 @@ abstract class PetConfSettings(config: Configuration)
   val timezone: String = baseConfig.get[String](timezoneProp)
   val timezoneID: ZoneId = ZoneId.of(timezone)
   val wsocketHostsAllowed: Seq[String] = baseConfig.get[Seq[String]](wsocketHostsAllowedProp)
+
+  val kafkaWsProducer: Configuration = baseConfig.get[Configuration](kafkaWsProducerProp)
 
   //security
   val authenticatorExpiry: FiniteDuration = config.get[FiniteDuration](authenticatorExpiryProp)

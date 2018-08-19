@@ -8,15 +8,14 @@ import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import javax.inject.Inject
 import play.api.i18n.Messages
 import play.api.mvc._
-import pme123.petstore.server.boundary.IdentityApi
-import pme123.petstore.server.control.auth.{DefaultEnv, UserService}
+import pme123.petstore.server.control.auth.{IdentityService, UserService}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * @see https://www.playframework.com/documentation/2.6.x/ScalaForms#Passing-MessagesProvider-to-Form-Helpers
   */
-class AuthController @Inject()(identityApi:IdentityApi,
+class AuthController @Inject()(identityApi:IdentityService,
                                userService: UserService,
                                signInTempl: views.html.login,
                                clock: Clock,

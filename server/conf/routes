@@ -10,7 +10,7 @@ POST        /auth/doLogin                        pme123.petstore.server.boundary
 GET         /auth/logout                         pme123.petstore.server.boundary.services.AuthController.signOut(redirectUrl: Option[String] ?= None)
 
 # Websocket for live updates (LogEntries) on Jobs
-GET         /ws/:username                        pme123.petstore.server.boundary.WebsocketController.wsClient(username: String)
+GET         /ws/pathMsgProducerWS                       pme123.petstore.server.boundary.WebsocketController.pathMsgProducerWS()
 # API to get all the Jobs that are provided
 GET         /api/loggedInUser                    pme123.petstore.server.boundary.services.UserApi.loggedInUser()
 GET         /api/comments/:username              pme123.petstore.server.boundary.services.CommentsApi.commentsFor(username: String)

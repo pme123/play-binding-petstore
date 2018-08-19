@@ -4,9 +4,8 @@ import com.mohiva.play.silhouette.api.Silhouette
 import play.Environment
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import pme123.petstore.server.boundary.IdentityApi
 import pme123.petstore.server.control.PetConfiguration
-import pme123.petstore.server.control.auth.{DefaultEnv, SecuredController}
+import pme123.petstore.server.control.auth.{DefaultEnv, IdentityService, SecuredController}
 import pme123.petstore.server.entity.{AuthUser, PageConfig}
 import pme123.petstore.shared.services.Logging
 
@@ -21,7 +20,7 @@ abstract class SPAController(spaComps: SPAComponents)
   lazy val env: Environment = spaComps.env
   lazy val config: PetConfiguration = spaComps.config
   lazy val cc: ControllerComponents = spaComps.cc
-  lazy val identityApi: IdentityApi = spaComps.identityApi
+  lazy val identityApi: IdentityService = spaComps.identityApi
   def silhouette: Silhouette[DefaultEnv] = spaComps.silhouette
 
   def pageConfig(maybeUser: Option[AuthUser]): Future[PageConfig] =

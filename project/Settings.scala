@@ -26,7 +26,7 @@ object Settings {
   lazy val jQueryV = "2.2.4"
   lazy val sloggingV = "0.6.1"
   lazy val semanticV = "2.3.1"
-  lazy val silhouetteV ="5.0.5"
+  lazy val silhouetteV = "5.0.5"
   lazy val scalaTestV = "3.0.4"
 
   lazy val organizationSettings = Seq(
@@ -68,6 +68,9 @@ object Settings {
     , "com.mohiva" %% "play-silhouette-testkit" % silhouetteV % "test"
     // scala-guice
     , "net.codingwell" %% "scala-guice" % "4.2.1"
+    // kafka
+    , "com.typesafe.akka" %% "akka-stream-kafka" % "0.22"
+
     // webjars for Semantic-UI
     , "org.webjars" %% "webjars-play" % "2.6.1"
     , "org.webjars" % "Semantic-UI" % semanticV
