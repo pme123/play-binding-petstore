@@ -22,20 +22,24 @@ object Breadcrumb {
         <i class="right arrow icon divider"></i>
         <div class="active section">Filter</div>
       </div>
+      case PathMsgView => <div class="ui breadcrumb">
+        <i class="right arrow icon divider"></i>
+        <div class="active section">Path Messages</div>
+      </div>
       case _: PetCategoryView =>
         val category = PetUIStore.uiState.petCategory.bind
         <div class="ui breadcrumb">
           <i class="right arrow icon divider"></i>{//
           Constants(category.toList.map(categoryActive): _*).map(_.bind)}
         </div>
-      case ppv: PetProductView =>
+      case _: PetProductView =>
         val product = PetUIStore.uiState.petProduct.bind
         <div class="ui breadcrumb">
           {Constants(product.toList.map(pp => categoryLink(pp.category)): _*).map(_.bind) //
           }<i class="right arrow icon divider"></i>{//
           Constants(product.toList.map(productActive): _*).map(_.bind)}
         </div>
-      case pv: PetView =>
+      case _: PetView =>
         val pet = PetUIStore.uiState.pet.bind.maybePet
         <div class="ui breadcrumb">
           {Constants(pet.toList.map(p => categoryLink(p.product.category)): _*).map(_.bind) //

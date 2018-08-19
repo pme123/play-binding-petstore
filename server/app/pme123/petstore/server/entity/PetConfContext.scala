@@ -27,8 +27,9 @@ object PetConfSettings {
   val wsocketHostsAllowedProp = "wsocket.hosts.allowed"
   // kafka
   val kafkaWsBootstrapServersProp = "kafka.ws.bootstrap-servers"
-  val kafkaWsProducerProp = "kafka.ws.producer"
-  val kafkaWsProducerTopicProp = "kafka.ws.producer.topic"
+  val kafkaWsPathMsgTopicProp = "kafka.ws.path-msg.topic"
+  val kafkaWsPathMsgProducerProp = "kafka.ws.path-msg.producer"
+  val kafkaWsPathMsgConsumerProp = "kafka.ws.path-msg.consumer"
 
   // security
   val authenticatorExpiryProp = "security.cookieAuthenticator.rememberMe.authenticatorExpiry"
@@ -58,8 +59,9 @@ abstract class PetConfSettings(config: Configuration)
   val wsocketHostsAllowed: Seq[String] = baseConfig.get[Seq[String]](wsocketHostsAllowedProp)
   // kafka
   val kafkaWsBootstrapServers: String = baseConfig.get[String](kafkaWsBootstrapServersProp)
-  val kafkaWsProducer: Configuration = baseConfig.get[Configuration](kafkaWsProducerProp)
-  val kafkaWsProducerTopic: String = baseConfig.get[String](kafkaWsProducerTopicProp)
+  val kafkaWsPathMsgTopic: String = baseConfig.get[String](kafkaWsPathMsgTopicProp)
+  val kafkaWsPathMsgProducer: Configuration = baseConfig.get[Configuration](kafkaWsPathMsgProducerProp)
+  val kafkaWsPathMsgConsumer: Configuration = baseConfig.get[Configuration](kafkaWsPathMsgConsumerProp)
 
   //security
   val authenticatorExpiry: FiniteDuration = config.get[FiniteDuration](authenticatorExpiryProp)
@@ -78,8 +80,8 @@ abstract class PetConfSettings(config: Configuration)
       , SettingsProp(wsocketHostsAllowedProp, wsocketHostsAllowed.map(_.toString))
       // kafka
       , SettingsProp(kafkaWsBootstrapServersProp, kafkaWsBootstrapServers)
-      , SettingsProp(kafkaWsProducerProp, kafkaWsProducer.toString)
-      , SettingsProp(kafkaWsProducerTopicProp, kafkaWsProducerTopic)
+      , SettingsProp(kafkaWsPathMsgProducerProp, kafkaWsPathMsgProducer.toString)
+      , SettingsProp(kafkaWsPathMsgTopicProp, kafkaWsPathMsgTopic)
       // security
       , SettingsProp(authenticatorExpiryProp, authenticatorExpiry)
       , SettingsProp(authenticatorIdleTimeoutProp, authenticatorIdleTimeout)

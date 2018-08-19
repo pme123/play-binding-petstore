@@ -29,12 +29,12 @@ class PathMsgProducer @Inject()(comps: SPAComponents)
 
   }
 
-  private val kafkaConfig = comps.config.kafkaWsProducer.underlying
+  private val kafkaConfig = comps.config.kafkaWsPathMsgProducer.underlying
   private val producerSettings =
     ProducerSettings(kafkaConfig, new StringSerializer, new StringSerializer)
       .withBootstrapServers(comps.config.kafkaWsBootstrapServers)
 
-  // Log events to the console
+  // Send events to Kafka Topic
   private val in: Sink[JsValue, NotUsed] =
     Flow[JsValue].map { json =>
       json.validate[PetWebSocketMsg] match {
@@ -52,7 +52,7 @@ class PathMsgProducer @Inject()(comps: SPAComponents)
       .map(_.get)
       .map { msg =>
         ProducerMessage.Message(
-          new ProducerRecord(comps.config.kafkaWsProducerTopic, msg.username, s"${msg.username},${msg.msg}"),
+          new ProducerRecord(comps.config.kafkaWsPathMsgTopic, msg.username, s"${msg.msg},${msg.time}"),
           "passThrough"
         )
       }.via(Producer.flexiFlow(producerSettings))

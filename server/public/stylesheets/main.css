@@ -6,6 +6,10 @@
     margin: -2px;
 }
 
+.hidden {
+    display: none;
+}
+
 .ui.vertical.menu {
     min-width: 250px;
 }

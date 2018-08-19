@@ -1,9 +1,11 @@
 package pme123.petstore.client.services
 
+import com.thoughtworks.binding.Binding
 import com.thoughtworks.binding.Binding.Var
 import org.scalajs.dom._
-import play.api.libs.json.Json
-import pme123.petstore.shared.PathMsg
+import play.api.libs.json.{JsSuccess, Json}
+import pme123.petstore.client.PetUIStore
+import pme123.petstore.shared.{PathMsg, PetWebSocketMsg}
 
 import scala.scalajs.js.timers.setTimeout
 
@@ -14,31 +16,47 @@ object ClientWebsocket
     s"${
       window.location.protocol
         .replace("http", "ws")
-    }//${window.location.host}${UIStore.uiState.webContext.value}/ws/pathMsgProducerWS"
+    }//${window.location.host}${UIStore.uiState.webContext.value}/ws"
 
-  private val webSocket: Var[Option[WebSocket]] = Var(None)
+  private val producerWS: Var[Option[WebSocket]] = Var(None)
+  private val consumerWS: Var[Option[WebSocket]] = Var(None)
   private val reconnectWSCode = 3001
 
 
-  def connectWS() {
-    closeWS()
-    val path = s"$wsURL"
-    val socket = new WebSocket(path)
-    webSocket.value = Some(socket)
-    info(s"Connect to Websocket: $path")
+  def connectProducerWS() {
+    connectWS(
+      () => {
+        val ws = new WebSocket(s"$wsURL/pathMsgProducerWS")
+        producerWS.value = Some(ws)
+        ws
+      },
+      msg => info(s"Received from Producer Websocket: $msg"))
+  }
+
+  val connectConsumerWS = Binding {
+    val user = UIStore.uiState.loggedInUser.bind.maybeUser
+    user.foreach(u =>
+      connectWS(
+        () => {
+          val ws = new WebSocket(s"$wsURL/pathMsgConsumerWS/${u.id}")
+          consumerWS.value = Some(ws)
+          ws
+        },
+        msg => Json.parse(msg).validate[PetWebSocketMsg] match {
+          case JsSuccess(pathMsg: PathMsg, _) => PetUIStore.addPathMsg(pathMsg)
+          case _ => info("Unexpected Message from Consumer")
+        }
+      ))
+  }
+
+  private def connectWS(createWs: () => WebSocket, onMessage: String => Any) {
+    val socket = createWs()
+    info(s"Connect to Websocket: ${socket.url}")
     socket.onmessage = {
       e: MessageEvent =>
         val message = e.data.toString
-          info(s"Received from Websocket: $message")
-        /*message.validate[AdapterMsg] match {
-          case JsSuccess(AdapterRunning(logReport), _) =>
-            UIStore.changeIsRunning(true)
-            UIStore.addLogReport(logReport)
-          case JsSuccess(other, _) =>
-            info(s"Other message: $other")
-          case JsError(errors) =>
-            errors.foreach(e => error(e.toString))
-        }*/
+        info(s"Received from Websocket: $message")
+        onMessage(message)
     }
     socket.onerror = { e: Event =>
       val ee = e.asInstanceOf[ErrorEvent]
@@ -52,7 +70,7 @@ object ClientWebsocket
       info("closed socket" + e.reason)
       if (e.code != reconnectWSCode) {
         setTimeout(1000) {
-          connectWS() // try to reconnect automatically
+          connectWS(createWs, onMessage) // try to reconnect automatically
         }
       }
     }
@@ -60,13 +78,9 @@ object ClientWebsocket
 
   def send(msg: String) {
     val username = UIStore.uiState.loggedInUser.value.username
-    webSocket.value
+    producerWS.value
       .foreach(_.send(Json.toJson(PathMsg(username, msg))
         .toString()))
-  }
-
-  def closeWS(): Unit = {
-    webSocket.value.foreach(_.close(reconnectWSCode, ": Reconnect for different configuration."))
   }
 
 }

@@ -8,6 +8,8 @@ import scala.language.implicitConversions
 
 object PetUIStore extends Logging {
 
+  val maxPathMsgs = 200
+
   val uiState = UIState()
 
   def changePetCategory(ident: String): PetCategory =
@@ -85,13 +87,25 @@ object PetUIStore extends Logging {
     tags
   }
 
+  def addPathMsg(pathMsg: PathMsg) {
+    info(s"UIStore: addPathMsg $pathMsg")
+    uiState.pathMsgs.value += pathMsg
+    restrictPathMsgs()
+  }
+
+  private def restrictPathMsgs() {
+    if (uiState.pathMsgs.value.length > maxPathMsgs)
+      uiState.pathMsgs.value.remove(0, uiState.pathMsgs.value.length - maxPathMsgs)
+  }
+
   case class UIState(petCategory: Var[Option[PetCategory]] = Var(None),
                      petProduct: Var[Option[PetProduct]] = Var(None),
                      pet: Var[UIPet] = Var(UIPet()),
                      petTags: Vars[String] = Vars(),
                      productTags: Vars[String] = Vars(),
                      petCategories: Vars[PetCategory] = Vars(),
-                     pets: Vars[Pet] = Vars()
+                     pets: Vars[Pet] = Vars(),
+                     pathMsgs: Vars[PathMsg] = Vars()
                     ) {
 
 
@@ -117,7 +131,6 @@ object PetUIStore extends Logging {
 }
 
 case class UIPet(maybePet: Option[Pet] = None) {
-
 
   val nonEmpty: Boolean = maybePet.nonEmpty
   lazy val pet: Pet = maybePet.get

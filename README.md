@@ -1,6 +1,13 @@
 # play-binding-petstore
 
-# Work just started!
+A Single Page Application SPA that demos how are things done with this stack:
+* Server: Scala / Play
+* Shared: Scala
+* Client: ScalaJS / Binding.scala
+
+Next to that I use it for experimenting with stuff I need for work, like Kafka.
+
+# Work is in progress and there are lots of loose ends!
 
 # Web Client
 * Run the client:

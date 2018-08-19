@@ -14,6 +14,9 @@ object UIRoute {
       case PetFilterView.hashRegex() =>
         info(s"PetFilterView")
         PetFilterView
+      case PathMsgView.hashPath =>
+        info(s"PathMsgView")
+        PathMsgView
       case PetView.hashRegex(idCat, idProd, id) =>
         info(s"PetView: $idCat $idProd $id")
         PetView(idCat, idProd, id)

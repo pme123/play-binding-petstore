@@ -3,29 +3,30 @@
 # ~~~~
 
 # Index file for the JobCockpit.
-GET         /                                    pme123.petstore.server.boundary.services.HomeController.index()
+GET         /                                      pme123.petstore.server.boundary.services.HomeController.index()
 # auth stuff
-GET         /auth/login                          pme123.petstore.server.boundary.services.AuthController.signIn(redirectUrl: Option[String] ?= None)
-POST        /auth/doLogin                        pme123.petstore.server.boundary.services.AuthController.authenticate(redirectUrl: Option[String] ?= None)
-GET         /auth/logout                         pme123.petstore.server.boundary.services.AuthController.signOut(redirectUrl: Option[String] ?= None)
+GET         /auth/login                            pme123.petstore.server.boundary.services.AuthController.signIn(redirectUrl: Option[String] ?= None)
+POST        /auth/doLogin                          pme123.petstore.server.boundary.services.AuthController.authenticate(redirectUrl: Option[String] ?= None)
+GET         /auth/logout                           pme123.petstore.server.boundary.services.AuthController.signOut(redirectUrl: Option[String] ?= None)
 
 # Websocket for live updates (LogEntries) on Jobs
-GET         /ws/pathMsgProducerWS                       pme123.petstore.server.boundary.WebsocketController.pathMsgProducerWS()
+GET         /ws/pathMsgProducerWS                  pme123.petstore.server.boundary.WebsocketController.pathMsgProducerWS()
+GET         /ws/pathMsgConsumerWS/:username        pme123.petstore.server.boundary.WebsocketController.pathMsgConsumerWS(username: String)
 # API to get all the Jobs that are provided
-GET         /api/loggedInUser                    pme123.petstore.server.boundary.services.UserApi.loggedInUser()
-GET         /api/comments/:username              pme123.petstore.server.boundary.services.CommentsApi.commentsFor(username: String)
-GET         /api/petTags                         pme123.petstore.server.boundary.PetstoreApi.petTags()
-GET         /api/productTags                     pme123.petstore.server.boundary.PetstoreApi.productTags()
-GET         /api/petCategories                   pme123.petstore.server.boundary.PetstoreApi.petCategories()
-GET         /api/petProducts/:petCategory        pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
-GET         /api/pets/:productIdent              pme123.petstore.server.boundary.PetstoreApi.pets(productIdent: String)
-GET         /api/pet/:petIdent                   pme123.petstore.server.boundary.PetstoreApi.pet(petIdent: String)
+GET         /api/loggedInUser                      pme123.petstore.server.boundary.services.UserApi.loggedInUser()
+GET         /api/comments/:username                pme123.petstore.server.boundary.services.CommentsApi.commentsFor(username: String)
+GET         /api/petTags                           pme123.petstore.server.boundary.PetstoreApi.petTags()
+GET         /api/productTags                       pme123.petstore.server.boundary.PetstoreApi.productTags()
+GET         /api/petCategories                     pme123.petstore.server.boundary.PetstoreApi.petCategories()
+GET         /api/petProducts/:petCategory          pme123.petstore.server.boundary.PetstoreApi.petProducts(petCategory: String)
+GET         /api/pets/:productIdent                pme123.petstore.server.boundary.PetstoreApi.pets(productIdent: String)
+GET         /api/pet/:petIdent                     pme123.petstore.server.boundary.PetstoreApi.pet(petIdent: String)
 + nocsrf
-PUT         /api/filter                          pme123.petstore.server.boundary.PetstoreApi.filter()
+PUT         /api/filter                            pme123.petstore.server.boundary.PetstoreApi.filter()
 # API to get all the Client Configs that are registered for a jobConfig
 #GET        /api/petProducts/:jobIdent                      pme123.petstore.server.boundary.services.PetstoreController.clientConfigs()
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                        controllers.Assets.at(file)
-GET         /versionedAssets/*file               controllers.Assets.versioned(file)
+GET         /assets/*file                          controllers.Assets.at(file)
+GET         /versionedAssets/*file                 controllers.Assets.versioned(file)
 
-->          /webjars                             webjars.Routes
+->          /webjars                               webjars.Routes

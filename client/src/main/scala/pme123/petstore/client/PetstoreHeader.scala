@@ -81,6 +81,7 @@ private[client] object PetstoreHeader
           </span>
           <div class="menu">
             <a href={s"${UIStore.uiState.webContext.value}/auth/logout"} class="item">Log Out</a>
+            <a href={s"${UIStore.uiState.webContext.value}/${PathMsgView.hashPath}"} class={if (user.isAdmin) "item" else "hidden"}>Path Messages</a>
           </div>
         </div>
       </div>
