@@ -52,7 +52,7 @@ class PathMsgProducer @Inject()(comps: SPAComponents)
       .map(_.get)
       .map { msg =>
         ProducerMessage.Message(
-          new ProducerRecord(comps.config.kafkaWsPathMsgTopic, msg.username, s"${msg.msg},${msg.time}"),
+          new ProducerRecord(comps.config.kafkaWsPathMsgTopic, msg.username, msg.route),
           "passThrough"
         )
       }.via(Producer.flexiFlow(producerSettings))

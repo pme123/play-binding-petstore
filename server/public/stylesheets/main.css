@@ -50,8 +50,7 @@
 }
 
 #logo-img, .login-logo {
-    background-image: url("../images/favicon.png");
-    background-repeat: no-repeat;
+    background: url("../images/favicon.png") no-repeat;
     width: 80px;
     height: 80px;
     background-size: 80px 80px;

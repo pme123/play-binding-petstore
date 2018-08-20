@@ -1,7 +1,5 @@
 package pme123.petstore.shared
 
-import java.time.Instant
-
 import julienrf.json.derived
 import play.api.libs.json.OFormat
 import pme123.petstore.shared.services.User
@@ -19,7 +17,7 @@ object PetWebSocketMsg {
 case object KeepAliveMsg extends PetWebSocketMsg
 
 
-case class PathMsg(username: User.UserId, msg: PathMsg.Message, time: String = Instant.now().toString)
+case class PathMsg(username: User.UserId, route: PathMsg.Message, time: Long = 0)
   extends PetWebSocketMsg
 
 object PathMsg {

@@ -6,6 +6,7 @@ import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Sink}
 import javax.inject.Inject
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import play.api.libs.json.{JsValue, Json}
 import pme123.petstore.server.boundary.services.SPAComponents
@@ -44,7 +45,7 @@ class PathMsgConsumer @Inject()(comps: SPAComponents)
     Consumer
       .committableSource(consumerSettings(userId), Subscriptions.topics(comps.config.kafkaWsPathMsgTopic))
       .mapAsync(10) { msg =>
-        business(msg.record.key, msg.record.value)
+        business(msg.record)
         //.map(_=>msg.committableOffset)
 
       }
@@ -54,10 +55,8 @@ class PathMsgConsumer @Inject()(comps: SPAComponents)
   //  .mapMaterializedValue(DrainingControl.apply)
   // .run()
 
-  def business(key: String, value: String): Future[JsValue] = {
-    info(s"From Kafka: $value")
-    val values = value.split(",")
-    Future.successful(PathMsg(key, values.head, values.last))
+  def business(record:ConsumerRecord[String,String]): Future[JsValue] = {
+    Future.successful(PathMsg(record.key, record.value, record.timestamp()))
       .map(Json.toJson[PetWebSocketMsg])
   }
 }

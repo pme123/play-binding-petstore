@@ -41,7 +41,7 @@ private[client] object PathMsgView
       <td>
         {pathMsg.username}
       </td> <td>
-      {pathMsg.msg}
+      {pathMsg.route}
     </td> <td>
       {new Date(pathMsg.time).toLocaleString()}
     </td>
