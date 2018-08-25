@@ -1,7 +1,7 @@
 package pme123.adapters.server.control
 
 import akka.util.Timeout
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.ws.WSClient
 
 import scala.concurrent.duration._
@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
 trait GuiceAcceptanceSpec
   extends AcceptanceSpec
     // if you want to test only one Test you need:
-    with GuiceOneServerPerSuite {
+    with GuiceOneAppPerSuite {
 
   implicit val timeout: Timeout = Timeout(2.second)
 

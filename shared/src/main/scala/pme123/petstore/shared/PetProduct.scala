@@ -26,6 +26,8 @@ case class PetProduct(
 
   val ident: String = productIdent
 
+  val tagsString: String = tags.mkString(",")
+
   val link: String = s"#${PetProduct.name}/${category.ident}/$productIdent"
 
   def identPrefix: String = name.take(3).toUpperCase
@@ -33,7 +35,16 @@ case class PetProduct(
 }
 
 object PetProduct {
+
+  val name: String = "product"
+
+  def apply(
+             productIdent: String,
+             name: String,
+             category: PetCategory,
+             tags: String
+           ): PetProduct = new PetProduct(productIdent, name, category, tags.splitToSet)
+
   implicit val jsonFormat: OFormat[PetProduct] = derived.oformat[PetProduct]()
-  def name: String = "product"
 
 }

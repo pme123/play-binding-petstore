@@ -17,12 +17,29 @@ Next to that I use it for experimenting with stuff I need for work, like Kafka.
   * demoAdmin
   * demoCustomer
   * demoManager  
+# Postgres
+You need Docker running. Then run:
 
+    docker run --rm -P -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="3sf2reRer" --name postgres -d postgres
+ 
+And here is how you connect:   
+    
+    psql postgresql://postgres:3sf2reRer@localhost:5432/postgres
+
+Or with Doobie:
+    
+      protected val xa: Aux[IO, Unit] = Transactor.fromDriverManager[IO](
+        "org.postgresql.Driver",
+        "jdbc:postgresql://localhost/postgres",
+        "postgres",
+        "3sf2reRer"
+      )
+      
 # Kafka
 * Installation according to [Confluent Open Source Quick Start (Local)](https://docs.confluent.io/current/quickstart/cos-quickstart.html)
 * Go to Kafka-bin directory:
 
-      cd kafka-installation/bin
+        cd <path-to-confluent>
 * Create the Producer Topic:
 
       ./kafka-topics --create --zookeeper localhost:2181 \
@@ -30,10 +47,10 @@ Next to that I use it for experimenting with stuff I need for work, like Kafka.
 * To check the incoming messages do these steps:
   * Start KSQL: 
   
-        ./ksql_logs <path-to-confluent>/bin/ksql
+        LOG_DIR=./ksql_logs ./bin/ksql
   * Create a Stream: 
   
-        CREATE STREAM petstorePages (route VARCHAR, time VARCHAR) \
+        CREATE STREAM petstorePages (route VARCHAR) \
                       WITH (KAFKA_TOPIC='petstore-msg-topic', VALUE_FORMAT='DELIMITED');
 
   * Create a Query:

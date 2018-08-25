@@ -27,6 +27,7 @@ object Settings {
   lazy val sloggingV = "0.6.1"
   lazy val semanticV = "2.3.1"
   lazy val silhouetteV = "5.0.5"
+  lazy val doobieV = "0.5.3"
   lazy val scalaTestV = "3.0.4"
 
   lazy val organizationSettings = Seq(
@@ -40,52 +41,60 @@ object Settings {
   }.getOrElse(FastOptStage)
 
   lazy val serverSettings: Seq[Def.Setting[_]] = Def.settings(
-    buildInfoSettings
-    , pipelineStages in Assets := Seq(scalaJSPipeline)
-    , pipelineStages := Seq(digest, gzip)
+    scalacOptions += "-Ypartial-unification",
+    buildInfoSettings,
+    pipelineStages in Assets := Seq(scalaJSPipeline),
+    pipelineStages := Seq(digest, gzip),
     // triggers scalaJSPipeline when using compile or continuous compilation
-    , compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value
+    compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     // to have routing also in ScalaJS
     // Create a map of versioned assets, replacing the empty versioned.js
-    , DigestKeys.indexPath := Some("javascripts/versioned.js")
+    DigestKeys.indexPath := Some("javascripts/versioned.js"),
     // Assign the asset index to a global versioned var
-    , DigestKeys.indexWriter ~= { writer => index => s"var versioned = ${writer(index)};" }
+    DigestKeys.indexWriter ~= { writer => index => s"var versioned = ${writer(index)};" }
   )
 
   lazy val serverDependencies: Seq[Def.Setting[_]] = Def.settings(libraryDependencies ++= Seq(
-    ws
-    , guice
-    , filters
-    , "org.apache.commons" % "commons-email" % "1.3.1"
-    , "biz.enef" %% "slogging-slf4j" % sloggingV
-    , "org.apache.poi" % "poi-ooxml" % "3.17"
+    ws,
+    guice,
+    filters,
+    "org.apache.commons" % "commons-email" % "1.3.1",
+    "biz.enef" %% "slogging-slf4j" % sloggingV,
+    "org.apache.poi" % "poi-ooxml" % "3.17",
     // scalajs for server
-    , "com.vmunier" %% "scalajs-scripts" % "1.1.1"
+    "com.vmunier" %% "scalajs-scripts" % "1.1.1",
     //Silhouette
-    , "com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteV
-    , "com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteV
-    , "com.mohiva" %% "play-silhouette-persistence" % silhouetteV
-    , "com.mohiva" %% "play-silhouette-testkit" % silhouetteV % "test"
+    "com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteV,
+    "com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteV,
+    "com.mohiva" %% "play-silhouette-persistence" % silhouetteV,
+    "com.mohiva" %% "play-silhouette-testkit" % silhouetteV % "test",
     // scala-guice
-    , "net.codingwell" %% "scala-guice" % "4.2.1"
+    "net.codingwell" %% "scala-guice" % "4.2.1",
     // kafka
-    , "com.typesafe.akka" %% "akka-stream-kafka" % "0.22"
+    "com.typesafe.akka" %% "akka-stream-kafka" % "0.22",
+    // doobie
+    // Start with this one
+    "org.tpolecat" %% "doobie-core" % doobieV,
+    "org.tpolecat" %% "doobie-h2" % doobieV,
+    "org.tpolecat" %% "doobie-hikari"    % doobieV,
+    "org.tpolecat" %% "doobie-postgres"  % doobieV,
 
     // webjars for Semantic-UI
-    , "org.webjars" %% "webjars-play" % "2.6.1"
-    , "org.webjars" % "Semantic-UI" % semanticV
-    , "org.webjars" % "jquery" % jQueryV
+    "org.webjars" %% "webjars-play" % "2.6.1",
+    "org.webjars" % "Semantic-UI" % semanticV,
+    "org.webjars" % "jquery" % jQueryV,
     // metrics
-    , "com.kenshoo" %% "metrics-play" % "2.6.6_0.6.2"
+    "com.kenshoo" %% "metrics-play" % "2.6.6_0.6.2",
     // TEST
-    , "com.typesafe.akka" %% "akka-testkit" % "2.5.6" % Test
-    , "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.6" % Test
-    , "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
-    , "org.awaitility" % "awaitility" % "3.0.0" % Test
+    "com.typesafe.akka" %% "akka-testkit" % "2.5.6" % Test,
+    "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.6" % Test,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
+    "org.awaitility" % "awaitility" % "3.0.0" % Test,
 
-    , "org.scalatest" %% "scalatest" % scalaTestV % Test
-    , "org.scalamock" %% "scalamock-scalatest-support" % "3.4.2" % Test
-    , "org.subethamail" % "subethasmtp" % "3.1.7" % Test
+    "org.scalatest" %% "scalatest" % scalaTestV % Test,
+    "org.scalamock" %% "scalamock-scalatest-support" % "3.4.2" % Test,
+    "org.subethamail" % "subethasmtp" % "3.1.7" % Test,
+    "org.tpolecat" %% "doobie-scalatest" % doobieV % Test
   ).map(_.excludeAll(ExclusionRule("org.slf4j", "slf4j-log4j12")))
   )
 

@@ -1,62 +1,70 @@
 package pme123.petstore.server.control
 
 
+import doobie.implicits._
+import doobie.util.fragment.Fragment
 import javax.inject.{Inject, Singleton}
 import pme123.petstore.server.entity.ImportWorkbook.workbook
-import pme123.petstore.shared._
+import pme123.petstore.shared.{Pet, PetCategory, PetProduct, _}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Success
 
 @Singleton
 class PetRepo @Inject()()
-                       (implicit val ec: ExecutionContext) {
+                       (implicit val ec: ExecutionContext)
+  extends PetDBRepo {
 
   def petCategories(): Future[PetCategories] =
-    Future.successful(
-      PetCategories(PetCategoriesRepo.categories.values.toList)
+    Future(
+      PetCategories(selectCategories())
     )
 
   def petCategory(petCategory: String): PetCategory =
-    PetCategoriesRepo.categories(petCategory)
+    selectCategory(petCategory)
 
   def productTags(): Future[Set[String]] =
-    Future.successful(
-      PetProductsRepo.tags
+    Future(
+      selectProductTags()
     )
 
   def petTags(): Future[Set[String]] =
-    Future.successful(
-      PetsRepo.tags
+    Future(
+      selectPetTags()
     )
 
   def petProducts(petCategory: PetCategory): Future[PetProducts] =
-    Future.successful(
-      PetProductsRepo.products.values.toList
-        .filter(_.category == petCategory)
-        .sortBy(_.name))
-      .map(PetProducts(petCategory, _))
+    Future(
+      PetProducts(petCategory, selectProducts(fr"where p.category = ${petCategory.ident}"))
+    )
 
   def pets(productIdent: String): Future[Pets] = {
     Future {
-      val prod = PetProductsRepo.products(productIdent)
-      Pets(prod, PetsRepo.pets.values.toList
-        .filter(_.product == prod)
+      Pets(selectProduct(productIdent), selectPets(fr"where p.product = $productIdent")
       )
     }
   }
 
   def pet(petIdent: String): Future[Pet] =
     Future {
-      PetsRepo.pet(petIdent)
+      selectPet(petIdent)
     }
 
   def filter(petFilter: PetFilter): Future[Seq[Pet]] =
     Future {
-      if (petFilter.nonEmpty)
-        PetsRepo.filter(petFilter)
-      else
-        Nil
+      if (petFilter.nonEmpty) {
+        val filters = Seq(
+          petFilter.petDescr.map(f => fr"p.descr like '%$f%'")
+        )
+        val frs: Fragment = filters
+          .filter(_.nonEmpty)
+          .map(_.get)
+          .foldLeft(fr"where ")((a, b) => a ++ b)
+
+        selectPets()
+        //PetsRepo.filter(petFilter)
+      } else
+        selectPets() // return one page of animals
     }
 }
 

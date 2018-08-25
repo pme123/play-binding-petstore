@@ -2,9 +2,10 @@ package pme123.petstore.server.control.auth
 
 import com.google.inject.name.Named
 import com.google.inject.{AbstractModule, Provides}
+import com.mohiva.play.silhouette
 import com.mohiva.play.silhouette.api.actions.{SecuredErrorHandler, UnsecuredErrorHandler}
 import com.mohiva.play.silhouette.api.crypto.{Crypter, CrypterAuthenticatorEncoder, Signer}
-import com.mohiva.play.silhouette.api.services.{AuthenticatorService, IdentityService}
+import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus, Silhouette, SilhouetteProvider}
 import com.mohiva.play.silhouette.crypto.{JcaCrypter, JcaCrypterSettings, JcaSigner, JcaSignerSettings}
@@ -35,7 +36,7 @@ class Module extends AbstractModule with ScalaModule {
     bind[Silhouette[DefaultEnv]].to[SilhouetteProvider[DefaultEnv]]
     bind[SecuredErrorHandler].to[ErrorHandler]
     bind[UnsecuredErrorHandler].to[ErrorHandler]
-    bind[IdentityService[AuthUser]].to[UserService]
+    bind[silhouette.api.services.IdentityService[AuthUser]].to[UserService]
 
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
@@ -45,7 +46,7 @@ class Module extends AbstractModule with ScalaModule {
   }
 
   @Provides
-  def provideEnvironment(userService: UserService,
+  def provideEnvironment(userService: silhouette.api.services.IdentityService[AuthUser],
                          authenticatorService: AuthenticatorService[CookieAuthenticator],
                          eventBus: EventBus): Environment[DefaultEnv] = {
 

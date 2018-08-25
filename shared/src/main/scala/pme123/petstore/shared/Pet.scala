@@ -33,12 +33,25 @@ case class Pet(
 
   val ident: String = itemIdent
 
+  val tagsString: String = tags.mkString(",")
+  val photoUrlsString: String = photoUrls.mkString(",")
+
   val priceAsStr = f"$$ $price%.2f"
 }
 
 object Pet {
 
   def name: String = "pet"
+
+  def create(
+             itemIdent: String,
+             descr: String,
+             price: Double,
+             product: PetProduct,
+             status: String,
+             tags: String,
+             photoUrls: String
+           ): Pet = new Pet(itemIdent, descr, price, product, PetStatus.withNameInsensitive(status), tags.splitToSet, photoUrls.splitToSet)
 
   implicit val jsonFormat: OFormat[Pet] = derived.oformat[Pet]()
 
