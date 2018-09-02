@@ -1,7 +1,7 @@
 package pme123.petstore.client.services
 
 import com.thoughtworks.binding.Binding.{Var, Vars}
-import pme123.petstore.shared.services._
+import pme123.petstore.shared.services.{LoggedInUser, _}
 
 import scala.language.implicitConversions
 
@@ -15,10 +15,16 @@ object UIStore extends Logging {
     webContext
   }
 
-  def changeLoggedInUser(loggedInUser: User): User = {
+  def changeLoggedInUser(loggedInUser: LoggedInUser): LoggedInUser = {
     info(s"UIStore: changeLoggedInUser $loggedInUser")
-    uiState.loggedInUser.value = LoggedInUser(Some(loggedInUser))
+    uiState.loggedInUser.value = loggedInUser
     loggedInUser
+  }
+
+  def changeNewComment(text: String): String = {
+    info(s"UIStore: changeNewComment $text")
+    uiState.newComment.value = Some(text)
+    text
   }
 
   def changeComments(comments: Comments): Comments = {
@@ -31,24 +37,8 @@ object UIStore extends Logging {
   case class UIState(
                       loggedInUser: Var[LoggedInUser] = Var(LoggedInUser()),
                       comments: Vars[Comment] = Vars(),
+                      newComment: Var[Option[String]] = Var(None),
                       webContext: Var[String] = Var("")
                     )
 
-}
-
-case class LoggedInUser(maybeUser: Option[User] = None) {
-
-  val isDefined: Boolean = maybeUser.isDefined
-
-  val isAdmin: Boolean = maybeUser.isDefined && maybeUser.get.isAdmin
-  val isManager: Boolean = maybeUser.isDefined && maybeUser.get.isManager
-  val isCustomer: Boolean = maybeUser.isEmpty || maybeUser.get.isCustomer
-
-  val avatar: String = {
-    val avatar = maybeUser.map(_.avatar).getOrElse("anonymous.png")
-    s"/images/users/$avatar"
-  }
-  val fullName: String = maybeUser.map(_.fullName).getOrElse("Anonymous")
-
-  val username: String = maybeUser.map(_.id).getOrElse("anonymous")
 }

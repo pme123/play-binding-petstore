@@ -2,7 +2,7 @@ package pme123.petstore.server.entity
 
 import org.apache.poi.ss.usermodel._
 import pme123.petstore.shared._
-import pme123.petstore.shared.services.{Logging, SPAException}
+import pme123.petstore.shared.services.{Logging, SPAException, User}
 
 import scala.collection.JavaConverters._
 import scala.util._
@@ -80,6 +80,22 @@ case class ImportWorkbook(wb: Workbook)
     }
   }
 
+  lazy val users: Try[Seq[Try[User]]] = {
+    getSheet(sheetUsers) map { s =>
+      rows(s).map { row =>
+        Try(
+          User(cellAsString(row.getCell(col0)),
+            cellAsString(row.getCell(col1)),
+            cellAsString(row.getCell(col2)),
+            cellAsString(row.getCell(col3)),
+            cellAsString(row.getCell(col4)),
+            cellAsString(row.getCell(col5)),
+            cellAsString(row.getCell(col6)))
+        ) recoverWith failure(sheetUsers, row.getRowNum)
+      }
+    }
+  }
+
   private def getSheet(sheetName: String): Try[Sheet] = {
     val sheet = wb.getSheet(sheetName)
     if (Option(sheet).isEmpty) {
@@ -143,6 +159,7 @@ object ImportWorkbook {
   val sheetCategories = "categories"
   val sheetPetProducts = "products"
   val sheetPets = "pets"
+  val sheetUsers = "users"
 
 
   val col0 = 0

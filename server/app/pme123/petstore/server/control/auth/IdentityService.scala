@@ -1,14 +1,18 @@
 package pme123.petstore.server.control.auth
 
-import pme123.petstore.server.control.services.UserRepo
+import javax.inject.Inject
+import pme123.petstore.server.control.services.UserDBRepo
 import pme123.petstore.server.entity.AuthUser
 import pme123.petstore.shared.services.User.UserId
 
-class IdentityService {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def isValidUser(username: UserId, pwd: String): Boolean =
-    UserRepo.contains(username) // no password required
+class IdentityService @Inject()(userDBRepo: UserDBRepo)
+                               (implicit ec: ExecutionContext) {
 
-  def getUser(username: UserId): AuthUser =
-    UserRepo.authUser(username)
+  def isValidUser(username: UserId, pwd: String): Future[Boolean] =
+    userDBRepo.containsAuthUser(username) // no password required
+
+  def getUser(username: UserId): Future[AuthUser] =
+    userDBRepo.selectAuthUser(username)
 }

@@ -5,6 +5,7 @@ import julienrf.json.derived
 import play.api.libs.json.OFormat
 
 import scala.collection.immutable
+import pme123.petstore.shared.services._
 
 case class Pets(
                  petProduct: PetProduct,

@@ -1,5 +1,6 @@
 package pme123.petstore.shared
 
+import pme123.petstore.shared.services._
 import julienrf.json.derived
 import play.api.libs.json.OFormat
 

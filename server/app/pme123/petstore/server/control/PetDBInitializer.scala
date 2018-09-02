@@ -4,17 +4,21 @@ import cats.implicits._
 import doobie._
 import doobie.implicits._
 import javax.inject.{Inject, Singleton}
+import pme123.petstore.server.control.services.DoobieDB
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PetDBInitializer @Inject() ()
-  extends PetDB {
+                                 (implicit val ec: ExecutionContext)
+  extends DoobieDB {
 
   val initCategory: Int = initTable(
     sql"""
-        DROP TABLE IF EXISTS pet_category
+        DROP TABLE IF EXISTS pet_categories
       """,
     sql"""
-        CREATE TABLE pet_category (
+        CREATE TABLE pet_categories (
           id   SERIAL,
           ident VARCHAR NOT NULL UNIQUE,
           name VARCHAR,
@@ -24,10 +28,10 @@ class PetDBInitializer @Inject() ()
 
   val initProduct: Int = initTable(
     sql"""
-        DROP TABLE IF EXISTS pet_product
+        DROP TABLE IF EXISTS pet_products
       """,
     sql"""
-        CREATE TABLE pet_product (
+        CREATE TABLE pet_products (
           id   SERIAL,
           ident VARCHAR NOT NULL UNIQUE,
           name VARCHAR,
@@ -38,10 +42,10 @@ class PetDBInitializer @Inject() ()
 
   val initPet: Int = initTable(
     sql"""
-        DROP TABLE IF EXISTS pet
+        DROP TABLE IF EXISTS pets
       """,
     sql"""
-        CREATE TABLE pet (
+        CREATE TABLE pets (
           id   SERIAL,
           ident VARCHAR NOT NULL UNIQUE,
           descr VARCHAR,
@@ -51,6 +55,37 @@ class PetDBInitializer @Inject() ()
           tags VARCHAR,
           photo_urls VARCHAR
         )"""
+  )
+
+  val initUser: Int = initTable(
+    sql"""
+        DROP TABLE IF EXISTS users
+      """,
+    sql"""
+        CREATE TABLE users (
+          id   SERIAL,
+          username VARCHAR NOT NULL UNIQUE,
+          groups VARCHAR,
+          firstName VARCHAR,
+          lastName VARCHAR,
+          email VARCHAR,
+          avatar VARCHAR,
+          language VARCHAR
+         )"""
+  )
+
+  val initComment: Int = initTable(
+    sql"""
+        DROP TABLE IF EXISTS comments
+      """,
+    sql"""
+        CREATE TABLE comments (
+          id   SERIAL,
+          username VARCHAR NOT NULL,
+          text VARCHAR NOT NULL,
+          created TIMESTAMP,
+          parent INTEGER
+         )"""
   )
 
   private def initTable(drop: Fragment, create: Fragment): Int = {

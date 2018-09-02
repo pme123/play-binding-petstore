@@ -32,7 +32,7 @@ case class WithRole(anyOf: String*) extends Authorization[AuthUser, CookieAuthen
 
 object WithRole {
   def isAuthorized(user: AuthUser, anyOf: String*): Boolean =
-    anyOf.intersect(user.groups).nonEmpty || user.groups.contains("admin")
+    anyOf.intersect(user.groups.toSeq).nonEmpty || user.groups.contains("admin")
 }
 
 /**
@@ -48,5 +48,5 @@ case class WithRoles(allOf: String*) extends Authorization[AuthUser, CookieAuthe
 
 object WithRoles {
   def isAuthorized(user: AuthUser, allOf: String*): Boolean =
-    allOf.intersect(user.groups).size == allOf.size || user.groups.contains("admin")
+    allOf.intersect(user.groups.toSeq).size == allOf.size || user.groups.contains("admin")
 }

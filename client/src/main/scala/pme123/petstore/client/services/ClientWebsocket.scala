@@ -38,7 +38,7 @@ object ClientWebsocket
     user.foreach(u =>
       connectWS(
         () => {
-          val ws = new WebSocket(s"$wsURL/pathMsgConsumerWS/${u.id}")
+          val ws = new WebSocket(s"$wsURL/pathMsgConsumerWS/${u.username}")
           consumerWS.value = Some(ws)
           ws
         },

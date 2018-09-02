@@ -2,47 +2,73 @@ package pme123.petstore.client
 
 import com.thoughtworks.binding.Binding.Constants
 import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom.raw.{Event, HTMLElement}
+import org.scalajs.jquery.jQuery
 import pme123.petstore.client.PetstoreHeader.staticAsset
-import pme123.petstore.client.services.{LoggedInUser, UIStore}
-import pme123.petstore.shared.services.{Comment, InstantHelper}
+import pme123.petstore.client.services.SemanticUI.{Field, Form, Rule, jq2semantic}
+import pme123.petstore.client.services.UIStore
+import pme123.petstore.shared.services.{Comment, InstantHelper, LoggedInUser}
+
+import scala.scalajs.js
+import scala.scalajs.js.timers.setTimeout
 
 object CommentsSidebar
   extends InstantHelper {
 
+  val form: js.Object = new Form {
+    //noinspection TypeAnnotation
+    val fields = js.Dynamic.literal(
+      commentField = new Field {
+        val identifier: String = "commentField"
+        val rules: js.Array[Rule] = js.Array(new Rule {
+          val `type`: String = "minLength[5]"
+        })
+      }
+    )
+  }
+
   @dom
   def create(): Binding[HTMLElement] = {
-    val user = UIStore.uiState.loggedInUser.bind
+
     <div class="ui labeled icon right inline vertical demo sidebar menu">
       <div class="item header">
         <i class="home icon"></i>
         Talk with us
       </div> <div class="item">
       {//
-      if (user.isDefined) {
-        ServerServices.commentsFor(user.username).bind
-        val comments = UIStore.uiState.comments.bind
-        commentsElems(comments).bind
-      }
-      else
-        <div
-        class="ui comments"></div>}
-      <form class="ui reply form">
+      Constants(UIStore.uiState.loggedInUser.bind.maybeUser.toSeq: _*)
+        .map(user => comments(user.username))
+        .map(_.bind) //
+      }<iframe style="display:none" onload={_: Event => initForm()}></iframe>
+      <form id="commentForm" class="ui reply form" onsubmit={event: Event =>
+        if (jQuery("#commentForm").form("is valid").asInstanceOf[Boolean])
+          UIStore.changeNewComment(jQuery("#commentField").value.toString)
+          event.preventDefault()}>
+        <div class="ui error message"></div>
+        {
+        Constants(UIStore.uiState.newComment.bind.toSeq:_*)
+          .map(ServerServices.addComment(_).bind)
+        }
         <div class="field">
-          <textarea></textarea>
+          <textarea id="commentField"></textarea>
         </div>
-        <div class="ui blue labeled submit icon button">
-          <i class="icon edit"></i> Send Message
-        </div>
+        <button type="submit" id="commentButton" class="ui blue labeled fluid submit icon button">
+          <i class="icon edit"></i>
+          Send Message
+        </button>
       </form>
     </div>
     </div>
   }
 
   @dom
-  private def commentsElems(comments: Seq[Comment]): Binding[HTMLElement] = {
-    <div class="ui comments">
-      {Constants(comments.map(commentElem): _*).map(_.bind)}
+  private def comments(username: String): Binding[HTMLElement] = {
+    <div>
+      {ServerServices.commentsFor(username).bind //
+      }<div class="ui comments">
+      {//
+      for (comment <- UIStore.uiState.comments) yield commentElem(comment).bind}
+    </div>
     </div>
   }
 
@@ -72,5 +98,11 @@ object CommentsSidebar
         </div>
       </div>
     </div>
+  }
+
+  private def initForm(): Unit = {
+    setTimeout(200) {
+      jQuery("#commentForm").form(CommentsSidebar.form)
+    }
   }
 }

@@ -1,9 +1,11 @@
 package pme123.petstore.server.boundary.services
 
+import doobie.implicits._
 import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
-import pme123.petstore.server.control.services.CommentsRepo
+import pme123.petstore.server.control.services.UserDBRepo
+import pme123.petstore.shared.services.Comments
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,16 +14,38 @@ import scala.concurrent.{ExecutionContext, Future}
   * Original see here: https://github.com/playframework/play-scala-websocket-example
   */
 @Singleton
-class CommentsApi @Inject()(val spaComps: SPAComponents)
+class CommentsApi @Inject()(val spaComps: SPAComponents,
+                            userDBRepo: UserDBRepo)
                            (implicit val ec: ExecutionContext)
   extends SPAController(spaComps) {
 
-  def commentsFor(username: String): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    val comments = CommentsRepo.commentsForUser(username)
+  def commentsFor(username: String): Action[AnyContent] = SecuredAction.async { implicit request: Request[AnyContent] =>
 
-    Future.successful(
-      Ok(Json.toJson(comments)).as(JSON)
-    )
+    commentsForUser(username)
+      .map(cs => Ok(Json.toJson(cs)).as(JSON))
+  }
+
+  def addComment(): Action[AnyContent] = Action.async { implicit request =>
+    val body = request.body
+    body.asText match {
+      case Some(text) =>
+        for {
+          _ <- userDBRepo.insertComment("demoCustomer", text)
+          comments <- commentsForUser("demoCustomer")
+          _ = println(s"comments: $comments")
+        } yield Ok(Json.toJson(comments)).as(JSON)
+
+      case None => Future.successful(BadRequest("No Comment set"))
+    }
+  }
+
+  private def commentsForUser(username: String) = {
+    for {
+      maybeUser <- userDBRepo.findUser(username)
+      if maybeUser.nonEmpty
+      comments <- userDBRepo.selectComments(fr"where c.username = $username")
+    } yield Comments(maybeUser.get, comments)
+
   }
 }
 

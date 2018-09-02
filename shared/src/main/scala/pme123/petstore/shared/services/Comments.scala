@@ -13,7 +13,7 @@ object Comments {
 
 }
 
-case class Comment(user: User, text: String, created: Instant = Instant.now())
+case class Comment(user: User, text: String, created: Instant = Instant.now(), replies: Seq[Comment] = Nil)
 
 object Comment extends InstantHelper {
   implicit val jsonFormat: OFormat[Comment] = derived.oformat[Comment]()

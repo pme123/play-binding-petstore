@@ -15,7 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
 /**
   * @see https://www.playframework.com/documentation/2.6.x/ScalaForms#Passing-MessagesProvider-to-Form-Helpers
   */
-class AuthController @Inject()(identityApi:IdentityService,
+class AuthController @Inject()(identityApi: IdentityService,
                                userService: UserService,
                                signInTempl: views.html.login,
                                clock: Clock,
@@ -28,8 +28,8 @@ class AuthController @Inject()(identityApi:IdentityService,
       case Some(_) => Future.successful(Redirect(routes.HomeController.index()))
       case None =>
         val signInForm = SignInForm.form
-        pageConfig(None).map(conf=>
-        Ok(signInTempl(signInForm, redirectUrl, conf)))
+        pageConfig(None).map(conf =>
+          Ok(signInTempl(signInForm, redirectUrl, conf)))
     }
   }
 
@@ -38,7 +38,7 @@ class AuthController @Inject()(identityApi:IdentityService,
     */
   def authenticate(redirectUrl: Option[String] = None): Action[AnyContent] = UnsecuredAction.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
-      formWithErrors =>pageConfig(None).map(conf=>
+      formWithErrors => pageConfig(None).map(conf =>
         BadRequest(signInTempl(formWithErrors, redirectUrl, conf))),
       formData => {
         val authService = silhouette.env.authenticatorService
@@ -74,10 +74,14 @@ class AuthController @Inject()(identityApi:IdentityService,
     redirectUrl.map(Redirect(_)).getOrElse(Redirect(routes.HomeController.index()))
 
   private def verifyCredentials(credentials: Credentials): Future[LoginInfo] = {
-    if (identityApi.isValidUser(credentials.identifier, credentials.password))
-      Future.successful(LoginInfo(credentials.identifier, userService.providerKey))
-    else
-      throw new ProviderException("Wrong Username or Password")
+    identityApi.isValidUser(credentials.identifier, credentials.password)
+      .map {
+        case true =>
+          LoginInfo(credentials.identifier, userService.providerKey)
+        case false =>
+          throw new ProviderException("Wrong Username or Password")
+      }
+
   }
 
   private def authenticatorWithRememberMe(authenticator: CookieAuthenticator, rememberMe: Boolean) = {

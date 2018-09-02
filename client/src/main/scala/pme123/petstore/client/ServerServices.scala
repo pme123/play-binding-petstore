@@ -5,6 +5,8 @@ import org.scalajs.dom.raw.HTMLElement
 import pme123.petstore.client.services.{HttpServices, UIStore}
 import pme123.petstore.shared._
 
+import scala.scalajs.js
+
 /**
   * Created by pascal.mengelt on 16.07.2017.
   */
@@ -12,40 +14,40 @@ object ServerServices
   extends HttpServices {
 
   def petCategories(): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/petCategories"
+    val path = s"$apiPath/petCategories"
 
-    httpGet(apiPath, (results: PetCategories) => PetUIStore.changePetCategories(results))
+    httpGet(path, (results: PetCategories) => PetUIStore.changePetCategories(results))
   }
 
   def petProducts(petCategory: PetCategory): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/petProducts/${petCategory.ident}"
+    val path = s"$apiPath/petProducts/${petCategory.ident}"
 
-    httpGet(apiPath, (results: PetProducts) => PetUIStore.changeAllPetProducts(results))
+    httpGet(path, (results: PetProducts) => PetUIStore.changeAllPetProducts(results))
   }
 
 
   def pets(petProduct: PetProduct): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/pets/${petProduct.productIdent}"
+    val path = s"$apiPath/pets/${petProduct.productIdent}"
 
-    httpGet(apiPath, (results: Pets) => PetUIStore.changePets(results))
+    httpGet(path, (results: Pets) => PetUIStore.changePets(results))
   }
 
   def pet(petIdent: String): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/pet/$petIdent"
+    val path = s"$apiPath/pet/$petIdent"
 
-    httpGet(apiPath, (result: Pet) => PetUIStore.changePet(result))
+    httpGet(path, (result: Pet) => PetUIStore.changePet(result))
   }
 
   def petTags(): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/petTags"
+    val path = s"$apiPath/petTags"
 
-    httpGet(apiPath, (results: Seq[String]) => PetUIStore.changePetTags(results))
+    httpGet(path, (results: Seq[String]) => PetUIStore.changePetTags(results))
   }
 
   def productTags(): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/productTags"
+    val path = s"$apiPath/productTags"
 
-    httpGet(apiPath, (results: Seq[String]) => PetUIStore.changeProductTags(results))
+    httpGet(path, (results: Seq[String]) => PetUIStore.changeProductTags(results))
   }
 
   @dom
@@ -54,9 +56,9 @@ object ServerServices
     if (filter.isDefined) {
       UIRoute.changeRoute(PetFilterView)
     }
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/filter"
+    val path = s"$apiPath/filter"
     <div>
-      {httpPut(apiPath, filter, (results: List[Pet]) => PetUIStore.changePets(results)).bind}
+      {httpPut(path, filter, (results: List[Pet]) => PetUIStore.changePets(results)).bind}
     </div>
 
   }

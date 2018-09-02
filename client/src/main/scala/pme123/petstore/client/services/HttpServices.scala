@@ -4,8 +4,9 @@ import com.thoughtworks.binding.{Binding, FutureBinding, dom}
 import org.scalajs.dom.ext.Ajax.InputData
 import org.scalajs.dom.ext.{Ajax, AjaxException}
 import org.scalajs.dom.raw.{HTMLElement, XMLHttpRequest}
+import org.scalajs.jquery.jQuery
 import play.api.libs.json._
-import pme123.petstore.shared.services.{Comments, User}
+import pme123.petstore.shared.services.{Comments, LoggedInUser}
 
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
@@ -13,6 +14,8 @@ import scala.util.{Failure, Success}
 
 trait HttpServices
   extends ClientUtils {
+
+  val apiPath = s"${UIStore.uiState.webContext.value}/api"
 
   def httpGet[A](apiPath: String
                  , storeChange: A => Unit)
@@ -38,7 +41,7 @@ trait HttpServices
         </div>
       case Some(Success(response)) =>
         val json: JsValue = Json.parse(response.responseText)
-        debug(s"Json received from $apiPath: ${json.toString().take(20)}")
+        info(s"Json received from $apiPath: ${json.toString().take(20)}")
         <div>
           {json.validate[A]
           .map(storeChange)
@@ -76,14 +79,26 @@ trait HttpServices
     </div>
 
   def loggedInUser(): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/loggedInUser"
+    val path = s"$apiPath/loggedInUser"
 
-    httpGet(apiPath, (results: User) => UIStore.changeLoggedInUser(results))
+    httpGet(path, (results: LoggedInUser) => UIStore.changeLoggedInUser(results))
   }
 
-  def commentsFor(username:String): Binding[HTMLElement] = {
-    val apiPath = s"${UIStore.uiState.webContext.value}/api/comments/$username"
+  def commentsFor(username: String): Binding[HTMLElement] = {
+    val path = s"$apiPath/comments/$username"
 
-    httpGet(apiPath, (results: Comments) => UIStore.changeComments(results))
+    httpGet(path, (results: Comments) => UIStore.changeComments(results))
   }
+
+  def addComment(text: String): Binding[HTMLElement] = {
+    val path = s"$apiPath/comment"
+
+    httpPut(path, text, (results: Comments) => {
+
+      jQuery("#commentField").value("")
+      UIStore.changeComments(results)
+    })
+
+  }
+
 }

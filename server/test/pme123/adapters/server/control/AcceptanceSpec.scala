@@ -1,12 +1,17 @@
 package pme123.adapters.server.control
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatest._
+import org.scalatestplus.play.WsScalaTestClient
 import pme123.petstore.shared.services.Logging
 
 /**
   * General Test Definition for ScalaTests
   */
 trait AcceptanceSpec
-  extends PlaySpec
+  extends AsyncWordSpec
+    with TestSuite
+    with MustMatchers
+    with OptionValues
+    with WsScalaTestClient
     with Logging {
 }

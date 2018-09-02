@@ -23,7 +23,7 @@ object Identity {
 }
 
 case class AuthUser(id: User.UserId,
-                    groups: Seq[User.GroupId] = Nil
+                    groups: Set[User.GroupId] = Set()
                    ) extends api.Identity {
 
   val isAdmin: Boolean = groups.contains(User.adminGroup)
