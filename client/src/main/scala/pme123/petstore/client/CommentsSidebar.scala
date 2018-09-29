@@ -7,7 +7,7 @@ import org.scalajs.jquery.jQuery
 import pme123.petstore.client.PetstoreHeader.staticAsset
 import pme123.petstore.client.services.SemanticUI.{Field, Form, Rule, jq2semantic}
 import pme123.petstore.client.services.UIStore
-import pme123.petstore.shared.services.{Comment, InstantHelper, LoggedInUser}
+import pme123.petstore.shared.services.{Comment, Conversation, InstantHelper, LoggedInUser}
 
 import scala.scalajs.js
 import scala.scalajs.js.timers.setTimeout
@@ -43,15 +43,11 @@ object CommentsSidebar
       <form id="commentForm" class="ui reply form" onsubmit={event: Event =>
         if (jQuery("#commentForm").form("is valid").asInstanceOf[Boolean])
           UIStore.changeNewComment(jQuery("#commentField").value.toString)
-          event.preventDefault()}>
-        <div class="ui error message"></div>
-        {
-        Constants(UIStore.uiState.newComment.bind.toSeq:_*)
-          .map(ServerServices.addComment(_).bind)
-        }
-        <div class="field">
-          <textarea id="commentField"></textarea>
-        </div>
+        event.preventDefault()}>
+        <div class="ui error message"></div>{Constants(UIStore.uiState.newComment.bind.toSeq: _*)
+        .map(ServerServices.addComment(_).bind)}<div class="field">
+        <textarea id="commentField"></textarea>
+      </div>
         <button type="submit" id="commentButton" class="ui blue labeled fluid submit icon button">
           <i class="icon edit"></i>
           Send Message
@@ -67,10 +63,18 @@ object CommentsSidebar
       {ServerServices.commentsFor(username).bind //
       }<div class="ui comments">
       {//
-      for (comment <- UIStore.uiState.comments) yield commentElem(comment).bind}
+      for (comment <- UIStore.uiState.conversations) yield conversationElem(comment).bind}
     </div>
     </div>
   }
+
+  @dom
+  private def conversationElem(conv: Conversation): Binding[HTMLElement] =
+    <div>
+      {//
+      Constants(conv.comments: _*).map(commentElem(_).bind)}
+    </div>
+
 
   @dom
   private def commentElem(comment: Comment): Binding[HTMLElement] = {

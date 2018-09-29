@@ -27,16 +27,16 @@ object UIStore extends Logging {
     text
   }
 
-  def changeComments(comments: Comments): Comments = {
-    info(s"UIStore: changeComments for ${comments.user}")
-    uiState.comments.value.clear()
-    uiState.comments.value ++= comments.comments
-    comments
+  def changeConversations(conversations: Conversations): Conversations = {
+    info(s"UIStore: changeConversations for ${conversations.conversations.length}")
+    uiState.conversations.value.clear()
+    uiState.conversations.value ++= conversations.conversations
+    conversations
   }
 
   case class UIState(
                       loggedInUser: Var[LoggedInUser] = Var(LoggedInUser()),
-                      comments: Vars[Comment] = Vars(),
+                      conversations: Vars[Conversation] = Vars(),
                       newComment: Var[Option[String]] = Var(None),
                       webContext: Var[String] = Var("")
                     )

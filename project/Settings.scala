@@ -28,7 +28,7 @@ object Settings {
   lazy val semanticV = "2.3.1"
   lazy val silhouetteV = "5.0.5"
   lazy val doobieV = "0.5.3"
-  lazy val scalaTestV = "3.0.4"
+  lazy val scalaTestV = "3.0.5"
 
   lazy val organizationSettings = Seq(
     organization := orgId

@@ -9,8 +9,8 @@ import pme123.petstore.server.control.services.DoobieDB
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PetDBInitializer @Inject() ()
-                                 (implicit val ec: ExecutionContext)
+class PetDBInitializer @Inject()()
+                                (implicit val ec: ExecutionContext)
   extends DoobieDB {
 
   val initCategory: Int = initTable(
@@ -74,6 +74,19 @@ class PetDBInitializer @Inject() ()
          )"""
   )
 
+  val initConversation: Int = initTable(
+    sql"""
+        DROP TABLE IF EXISTS conversations
+      """,
+    sql"""
+        CREATE TABLE conversations (
+          id   SERIAL,
+          username VARCHAR NOT NULL,
+          active BOOLEAN,
+          PRIMARY KEY (id)
+        )"""
+  )
+
   val initComment: Int = initTable(
     sql"""
         DROP TABLE IF EXISTS comments
@@ -83,9 +96,11 @@ class PetDBInitializer @Inject() ()
           id   SERIAL,
           username VARCHAR NOT NULL,
           text VARCHAR NOT NULL,
-          created TIMESTAMP,
-          parent INTEGER
-         )"""
+          conversation INT,
+          created TIMESTAMP NOT NULL,
+          PRIMARY KEY (id),
+          FOREIGN KEY (conversation) REFERENCES conversations(id)
+      )"""
   )
 
   private def initTable(drop: Fragment, create: Fragment): Int = {

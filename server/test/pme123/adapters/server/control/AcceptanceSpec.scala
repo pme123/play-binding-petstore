@@ -8,8 +8,9 @@ import pme123.petstore.shared.services.Logging
   * General Test Definition for ScalaTests
   */
 trait AcceptanceSpec
-  extends AsyncWordSpec
-    with TestSuite
+  extends WordSpec
+   // with AsyncTestSuite
+   // with TestSuite
     with MustMatchers
     with OptionValues
     with WsScalaTestClient

@@ -5,7 +5,7 @@ import javax.inject._
 import play.api.libs.json._
 import play.api.mvc._
 import pme123.petstore.server.control.services.UserDBRepo
-import pme123.petstore.shared.services.Comments
+import pme123.petstore.shared.services.{Conversation, Conversations, NewComment}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -27,13 +27,16 @@ class CommentsApi @Inject()(val spaComps: SPAComponents,
 
   def addComment(): Action[AnyContent] = Action.async { implicit request =>
     val body = request.body
-    body.asText match {
-      case Some(text) =>
-        for {
-          _ <- userDBRepo.insertComment("demoCustomer", text)
-          comments <- commentsForUser("demoCustomer")
-          _ = println(s"comments: $comments")
-        } yield Ok(Json.toJson(comments)).as(JSON)
+    body.asJson match {
+      case Some(newComent) => newComent.validate[NewComment] match {
+        case JsSuccess(comment: NewComment, path) =>
+          for {
+            _ <- userDBRepo.insertComment(comment)
+            comments <- commentsForUser("demoCustomer")
+            _ = println(s"comments: $comments")
+          } yield Ok(Json.toJson(comments)).as(JSON)
+      }
+
 
       case None => Future.successful(BadRequest("No Comment set"))
     }
@@ -44,7 +47,7 @@ class CommentsApi @Inject()(val spaComps: SPAComponents,
       maybeUser <- userDBRepo.findUser(username)
       if maybeUser.nonEmpty
       comments <- userDBRepo.selectComments(fr"where c.username = $username")
-    } yield Comments(maybeUser.get, comments)
+    } yield Conversations(Seq())
 
   }
 }
