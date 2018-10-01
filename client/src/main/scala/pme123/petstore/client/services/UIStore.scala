@@ -1,6 +1,6 @@
 package pme123.petstore.client.services
 
-import com.thoughtworks.binding.Binding.{Var, Vars}
+import com.thoughtworks.binding.Binding.Var
 import pme123.petstore.shared.services.{LoggedInUser, _}
 
 import scala.language.implicitConversions
@@ -21,23 +21,8 @@ object UIStore extends Logging {
     loggedInUser
   }
 
-  def changeNewComment(text: String): String = {
-    info(s"UIStore: changeNewComment $text")
-    uiState.newComment.value = Some(text)
-    text
-  }
-
-  def changeConversations(conversations: Conversations): Conversations = {
-    info(s"UIStore: changeConversations for ${conversations.conversations.length}")
-    uiState.conversations.value.clear()
-    uiState.conversations.value ++= conversations.conversations
-    conversations
-  }
-
   case class UIState(
                       loggedInUser: Var[LoggedInUser] = Var(LoggedInUser()),
-                      conversations: Vars[Conversation] = Vars(),
-                      newComment: Var[Option[String]] = Var(None),
                       webContext: Var[String] = Var("")
                     )
 

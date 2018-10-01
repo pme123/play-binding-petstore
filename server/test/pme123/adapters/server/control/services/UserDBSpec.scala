@@ -15,14 +15,6 @@ class UserDBSpec
           assert(users.size >= 3))
     }
 
-    "initialize the Comment Table" in {
-      for {
-        _ <- userDBRepo.insertComment("demoCustomer", "Hi do you have also Pink Rats?")
-        comments <- userDBRepo.selectComments()
-      } yield assert(comments.size >= 0)
-    }
-
-
   }
 }
 

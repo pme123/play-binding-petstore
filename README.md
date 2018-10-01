@@ -39,10 +39,16 @@ Or with Doobie:
 * Installation according to [Confluent Open Source Quick Start (Local)](https://docs.confluent.io/current/quickstart/cos-quickstart.html)
 * Go to Kafka-bin directory:
 
-        cd <path-to-confluent>
+        cd <path-to-kafka>
+        # example
+        cd /Users/mpa/dev/kafka/confluent-5.0.0
+        
+* Start Kafka
+
+      <path-to-confluent>/bin/confluent start
 * Create the Producer Topic:
 
-      ./kafka-topics --create --zookeeper localhost:2181 \
+      ./bin/kafka-topics --create --zookeeper localhost:2181 \
        --replication-factor 1 --partitions 1 --topic petstore-msg-topic
 * To check the incoming messages do these steps:
   * Start KSQL: 

@@ -14,9 +14,7 @@ GET         /ws/pathMsgProducerWS                  pme123.petstore.server.bounda
 GET         /ws/pathMsgConsumerWS/:username        pme123.petstore.server.boundary.WebsocketController.pathMsgConsumerWS(username: String)
 # API to get all the Jobs that are provided
 GET         /api/loggedInUser                      pme123.petstore.server.boundary.services.UserApi.loggedInUser()
-GET         /api/comments/:username                pme123.petstore.server.boundary.services.CommentsApi.commentsFor(username: String)
-+ nocsrf
-PUT         /api/comment                           pme123.petstore.server.boundary.services.CommentsApi.addComment()
+
 GET         /api/petTags                           pme123.petstore.server.boundary.PetstoreApi.petTags()
 GET         /api/productTags                       pme123.petstore.server.boundary.PetstoreApi.productTags()
 GET         /api/petCategories                     pme123.petstore.server.boundary.PetstoreApi.petCategories()

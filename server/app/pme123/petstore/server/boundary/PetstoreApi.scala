@@ -1,5 +1,7 @@
 package pme123.petstore.server.boundary
 
+import cats.data.NonEmptyList
+import doobie._
 import doobie.implicits._
 import doobie.util.fragment.Fragment
 import javax.inject._
@@ -82,16 +84,33 @@ class PetstoreApi @Inject()(petDBRepo: PetDBRepo,
   private def filter(petFilter: PetFilter): Future[Seq[Pet]] =
     if (petFilter.nonEmpty) {
       val filters = Seq(
-        petFilter.petDescr.map(f => fr"p.descr like '%$f%'"),
-        petFilter.product.map(f => fr"pp.name like '%$f%'")
+        petFilter.petDescr.map(f => s"%$f%").map(f => fr"lower(p.descr) like $f"),
+        petFilter.product.map(f => s"%$f%").map(f => fr"lower(pp.name) like $f"),
+        inFilter(fr"pp.category", petFilter.categories),
+        tagsFilter(fr"pp.tags", petFilter.productTags),
+        tagsFilter(fr"p.tags", petFilter.petTags)
       )
-      val frs: Fragment = filters
+      val frs = filters
         .filter(_.nonEmpty)
-        .map(_.get)
-        .foldLeft(fr"where ")((a, b) => a ++ fr"AND" ++ b)
-
+        .map(_.get) match {
+        case Nil => fr""
+        case x :: Nil => fr"where" ++ x
+        case x :: tail => tail.foldLeft(fr"where" ++ x)((a, b) => a ++ fr"AND" ++ b)
+      }
       petDBRepo.selectPets(frs)
     } else
       petDBRepo.selectPets() // return one page of animals
 
+  private def inFilter(field: Fragment, ids: Seq[String]): Option[Fragment] =
+    ids match {
+      case Nil => None
+      case x :: tail => Some(Fragments.in(field, NonEmptyList(x, tail)))
+    }
+
+  private def tagsFilter(field: Fragment, tags: Seq[String]): Option[Fragment] =
+    tags.map(t=>s"%$t%") match {
+      case Nil => None
+      case x :: tail =>
+        Some(tail.foldLeft(field ++ fr"like $x")((a, b) => a ++ fr"OR" ++ field ++ fr"like $b"))
+    }
 }

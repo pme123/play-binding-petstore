@@ -37,8 +37,7 @@ object PetstoreClient
   def render = Binding {
     Constants(
       consumer,
-      CommentsSidebar.create(),
-      pusher
+      container
     ).map(_.bind)
   }
 
@@ -50,8 +49,8 @@ object PetstoreClient
     </div>
 
   @dom
-  private lazy val pusher: Binding[HTMLElement] =
-    <div class="pusher">
+  private lazy val container: Binding[HTMLElement] =
+    <div>
       {//
       initCategories.bind}{//
       PetstoreHeader.create().bind}<div class="ui four column doubling stackable grid">

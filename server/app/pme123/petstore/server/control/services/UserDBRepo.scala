@@ -1,12 +1,10 @@
 package pme123.petstore.server.control.services
 
-import java.time.Instant
-
 import doobie.Fragment
 import doobie.implicits._
 import javax.inject.Inject
 import pme123.petstore.server.entity.AuthUser
-import pme123.petstore.shared.services.{Comment, _}
+import pme123.petstore.shared.services._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,48 +49,5 @@ class UserDBRepo @Inject()()
   def containsAuthUser(username: String): Future[Boolean] =
     selectAuthUsers(fr"where username = $username")
       .map(_.nonEmpty)
-
-  def insertComment(newComment: NewComment): Future[Int] =
-    insert(
-      sql"""insert into comments (username, text, conversation, created)
-             values (${newComment.username}, ${newComment.text}, ${newComment.conversation}, new Date()})"""
-    )
-
-  def selectComments(where: Fragment = fr""): Future[List[Comment]] =
-    select((fr"""select c.text, c.created,
-                     u.username, u.groups, u.firstname, u.lastname, u.email, u.avatar, u.language
-                     from comments c
-                     left join users u
-                     on c.username = u.username
-         """ ++ where)
-      .query[(String, Instant,
-      String, String, String, String, String, String, String)]
-      .map { case (text, created, username, groups, firstname, lastname, email, avatar, language) =>
-        Comment.apply(User.apply(username, groups, firstname, lastname, email, avatar, language), text, created)
-      }
-    )
-
-  def insertConversation(conversation:Conversation): Future[Int] =
-    insert(
-      sql"""insert into conversations (username, active)
-             values (${newComment.username}, ${newComment.text}, ${newComment.conversation}, new Date()})"""
-    )
-
-  def selectComments(where: Fragment = fr""): Future[List[Comment]] =
-    select((fr"""select c.text, c.created,
-                     u.username, u.groups, u.firstname, u.lastname, u.email, u.avatar, u.language
-                     from comments c
-                     left join users u
-                     on c.username = u.username
-         """ ++ where)
-      .query[(String, Instant,
-      String, String, String, String, String, String, String)]
-      .map { case (text, created, username, groups, firstname, lastname, email, avatar, language) =>
-        Comment.apply(User.apply(username, groups, firstname, lastname, email, avatar, language), text, created)
-      }
-    )
-
-  case class DBComment(id: Long, username: String, text: String, conversation: Long, created: Instant = Instant.now(), parent: Option[Long] = None)
-
 
 }

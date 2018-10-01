@@ -74,35 +74,6 @@ class PetDBInitializer @Inject()()
          )"""
   )
 
-  val initConversation: Int = initTable(
-    sql"""
-        DROP TABLE IF EXISTS conversations
-      """,
-    sql"""
-        CREATE TABLE conversations (
-          id   SERIAL,
-          username VARCHAR NOT NULL,
-          active BOOLEAN,
-          PRIMARY KEY (id)
-        )"""
-  )
-
-  val initComment: Int = initTable(
-    sql"""
-        DROP TABLE IF EXISTS comments
-      """,
-    sql"""
-        CREATE TABLE comments (
-          id   SERIAL,
-          username VARCHAR NOT NULL,
-          text VARCHAR NOT NULL,
-          conversation INT,
-          created TIMESTAMP NOT NULL,
-          PRIMARY KEY (id),
-          FOREIGN KEY (conversation) REFERENCES conversations(id)
-      )"""
-  )
-
   private def initTable(drop: Fragment, create: Fragment): Int = {
     (drop.update.run, create.update.run)
       .mapN(_ + _).transact(xa).unsafeRunSync

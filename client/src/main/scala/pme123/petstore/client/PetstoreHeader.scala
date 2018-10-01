@@ -2,13 +2,10 @@ package pme123.petstore.client
 
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.raw.{Event, HTMLElement}
-import pme123.petstore.client.services.{ClientUtils, UIStore}
 import org.scalajs.dom.window
-import org.scalajs.jquery.jQuery
-import pme123.petstore.client.services.SemanticUI.jq2semantic
+import pme123.petstore.client.services.{ClientUtils, UIStore}
 
 import scala.language.implicitConversions
-import scala.scalajs.js.timers.setTimeout
 
 private[client] object PetstoreHeader
   extends ClientUtils {
@@ -23,8 +20,7 @@ private[client] object PetstoreHeader
       }{spacer.bind}{//
       PetMenu.create().bind}{//
       shoppingCardButton.bind}{//
-      logInButton.bind}{//
-      sidebarButton().bind}
+      logInButton.bind}
     </div>
 
   }
@@ -96,22 +92,6 @@ private[client] object PetstoreHeader
         <i class="sign in alternate icon large"></i>
       </button>
       </div>
-  }
-
-  @dom
-  private def sidebarButton() = {
-    <div class=""
-         onclick={_: Event =>
-           setTimeout(200) {
-             jQuery(".ui.sidebar") //.sidebar(js.Dynamic.literal(context = ".bottom.segment"))
-               .sidebar("toggle")
-           }}
-         data:data-tooltip="Ask us!"
-         data:data-position="bottom left">
-      <a class="item">
-        <i class="comments big icon"></i>
-      </a>
-    </div>
   }
 
 }

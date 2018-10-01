@@ -4,9 +4,8 @@ import com.thoughtworks.binding.{Binding, FutureBinding, dom}
 import org.scalajs.dom.ext.Ajax.InputData
 import org.scalajs.dom.ext.{Ajax, AjaxException}
 import org.scalajs.dom.raw.{HTMLElement, XMLHttpRequest}
-import org.scalajs.jquery.jQuery
 import play.api.libs.json._
-import pme123.petstore.shared.services.{Conversations, LoggedInUser}
+import pme123.petstore.shared.services.LoggedInUser
 
 import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
@@ -82,23 +81,6 @@ trait HttpServices
     val path = s"$apiPath/loggedInUser"
 
     httpGet(path, (results: LoggedInUser) => UIStore.changeLoggedInUser(results))
-  }
-
-  def commentsFor(username: String): Binding[HTMLElement] = {
-    val path = s"$apiPath/comments/$username"
-
-    httpGet(path, (results: Conversations) => UIStore.changeConversations(results))
-  }
-
-  def addComment(text: String): Binding[HTMLElement] = {
-    val path = s"$apiPath/comment"
-
-    httpPut(path, text, (results: Conversations) => {
-
-      jQuery("#commentField").value("")
-      UIStore.changeConversations(results)
-    })
-
   }
 
 }
